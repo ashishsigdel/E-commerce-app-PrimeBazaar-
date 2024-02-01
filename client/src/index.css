@@ -21,6 +21,20 @@ body {
 .button:disabled {
   background: #eb8a2f;
 }
+.button2 {
+  text-transform: uppercase;
+  background: #18bb03;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  transition: all ease-in-out 0.3s;
+}
+.button2:hover {
+  background: #df6d02;
+}
+.button2:disabled {
+  background: #eb8a2f;
+}
 
 .span {
   color: gray;
@@ -28,4 +42,8 @@ body {
 .span:hover {
   color: red;
   text-decoration: underline;
+}
+
+.span2 {
+  color: gray;
 }

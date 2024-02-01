@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
 export default function App() {
   return (
@@ -13,9 +14,11 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sign-in" element={<Signin />} />
-        <Route path="/sign-up" element={<Signup />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/sign-in" element={<Signin />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+        </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>

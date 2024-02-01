@@ -15,7 +15,7 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   return (
     <header className="bg-orange-500 text-white shadow-md">
-      <div className="flex-col gap-2 sm:mx-auto max-w-6xl pb-3 pt-3 sm:pt-0 mx-2">
+      <div className="flex-col gap-2 sm:mx-auto max-w-6xl pb-3 pt-3 sm:pt-0 mx-2 sm:px-2">
         <div className="sm:flex hidden">
           <Link to={"/sign-in/admin"} className="text-sm text-white mx-2 my-1">
             <span>Become a seller</span>

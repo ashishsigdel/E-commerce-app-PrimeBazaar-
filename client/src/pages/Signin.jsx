@@ -1,5 +1,5 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,12 +7,14 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -51,7 +53,7 @@ export default function SignIn() {
         <p className="text-sm">
           New member?{" "}
           <Link to={"/sign-up"} className="text-blue-500">
-            Signup{" "}
+            Register{" "}
           </Link>
           here
         </p>
@@ -102,6 +104,10 @@ export default function SignIn() {
               {loading ? <Spinner /> : "Sign in"}
             </button>
             {error && <p className="my-2 text-sm text-red-500">{error}</p>}
+            <div className="my-4">
+              <p className="text-sm">Or, login with</p>
+              <OAuth />
+            </div>
           </div>
         </form>
       </div>
