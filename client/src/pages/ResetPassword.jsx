@@ -1,12 +1,13 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Spinner } from "flowbite-react";
 
 export default function ResetPassword() {
   const [formData, setFormData] = useState({});
   console.log(formData);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
-  const [changed, setChanged] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
@@ -17,9 +18,10 @@ export default function ResetPassword() {
 
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
     try {
+      setError(null);
+      setSuccess(null);
+      setLoading(true);
       const res = await fetch("api/user/forgot-password-token", {
         method: "POST",
         headers: {
@@ -29,23 +31,27 @@ export default function ResetPassword() {
       });
       const data = await res.json();
       if (res.ok) {
+        setLoading(false);
         setSuccess(
           "OTP sent, Kindly check your inbox and input the code here."
         );
       } else {
+        setLoading(false);
         setError(data.message);
         return;
       }
     } catch (error) {
+      setLoading(false);
       setError(error.message);
       console.log(error);
     }
   };
   const handleSubmitPassword = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(true);
     try {
+      setLoading(true);
+      setError(null);
+      setSuccess(true);
       if (formData.password === formData.repassword) {
         const res = await fetch(`/api/user/reset-password/${formData.otp}`, {
           method: "POST",
@@ -59,17 +65,21 @@ export default function ResetPassword() {
         if (res.ok) {
           navigate("/sign-in");
           setSuccess(false);
+          setLoading(false);
         } else {
           setError(data.message);
           setSuccess(true);
+          setLoading(false);
           return;
         }
       } else {
         setError("Password does not match.");
+        setLoading(false);
         setSuccess(true);
       }
     } catch (error) {
       setError(error.message);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -105,6 +115,7 @@ export default function ResetPassword() {
                     placeholder="Enter OTP"
                     onChange={handleChange}
                   />
+                  <p className=" text-sm text-green-500 my-0">{success}</p>
                   <input
                     type="password"
                     id="password"
@@ -122,12 +133,11 @@ export default function ResetPassword() {
                 </div>
                 <div className="flex flex-col">
                   {error && (
-                    <p className=" text-sm text-red-500 my-2">{error}</p>
+                    <p className=" text-sm text-red-500 my-3">{error}</p>
                   )}
-                  <p className=" text-sm text-green-500 my-2">{success}</p>
 
                   <button type="submit" className="w-full button">
-                    Reset Password
+                    {loading ? <Spinner /> : "Reset Password"}
                   </button>
                 </div>
               </div>
@@ -158,7 +168,7 @@ export default function ResetPassword() {
                     <p className=" text-sm text-red-500 my-2">{error}</p>
                   )}
                   <button type="submit" className="w-full button">
-                    Send OTP
+                    {loading ? <Spinner /> : "send OTP"}
                   </button>
                 </div>
               </div>
@@ -166,7 +176,7 @@ export default function ResetPassword() {
           </>
         )}
 
-        <div className="mt-2">
+        <div className="mt-4">
           <p className="text-sm">
             Cancel to reset.{" "}
             <Link to={"/sign-in"} className="text-blue-400">

@@ -1,9 +1,11 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Spinner } from "flowbite-react";
 
 export default function Signup() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
@@ -14,8 +16,9 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     try {
+      setError(null);
+      setLoading(true);
       if (formData.password === formData.repassword) {
         const res = await fetch("/api/user/register", {
           method: "POST",
@@ -26,17 +29,20 @@ export default function Signup() {
         });
         const data = await res.json();
         if (res.ok) {
+          setLoading(false);
           navigate("/sign-in");
         } else {
+          setLoading(false);
           setError(data.message);
           return;
         }
       } else {
+        setLoading(false);
         setError("Password does not match.");
       }
     } catch (error) {
+      setLoading(false);
       setError(error.message);
-      console.log(error);
     }
   };
 
@@ -122,7 +128,7 @@ export default function Signup() {
             </div>
             {error && <p className="my-2 text-sm text-red-500">{error}</p>}
             <button color="" type="submit" className="w-full button">
-              Sign up
+              {loading ? <Spinner /> : "Sign up"}
             </button>
             <p className="text-xs mt-3">
               By clicking &#34;SIGN UP&#34;, I agree to PrimeBazaar&#39;s{" "}

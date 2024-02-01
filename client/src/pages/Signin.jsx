@@ -1,9 +1,17 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Spinner } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
@@ -14,8 +22,8 @@ export default function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     try {
+      dispatch(signInStart());
       const res = await fetch("/api/user/login", {
         method: "POST",
         headers: {
@@ -25,14 +33,14 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       } else {
-        setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
     } catch (error) {
-      setError(error.message);
-      console.log(error);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -85,8 +93,13 @@ export default function SignIn() {
             </div>
           </div>
           <div className="flex-1">
-            <button color="" type="submit" className="w-full button sm:mt-9">
-              Sign in
+            <button
+              disabled={loading}
+              color=""
+              type="submit"
+              className="w-full button sm:mt-9"
+            >
+              {loading ? <Spinner /> : "Sign in"}
             </button>
             {error && <p className="my-2 text-sm text-red-500">{error}</p>}
           </div>
