@@ -21,3 +21,11 @@ body {
 .button:disabled {
   background: #eb8a2f;
 }
+
+.span {
+  color: gray;
+}
+.span:hover {
+  color: red;
+  text-decoration: underline;
+}

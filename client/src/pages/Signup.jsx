@@ -1,6 +1,7 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Spinner } from "flowbite-react";
+import OAuth from "../components/OAuth";
 
 export default function Signup() {
   const [formData, setFormData] = useState({});
@@ -29,8 +30,8 @@ export default function Signup() {
         });
         const data = await res.json();
         if (res.ok) {
-          setLoading(false);
           navigate("/sign-in");
+          setLoading(false);
         } else {
           setLoading(false);
           setError(data.message);
@@ -135,6 +136,10 @@ export default function Signup() {
               <Link className="text-blue-500">Terms of Use</Link> and{" "}
               <Link className="text-blue-500">Privacy Policy</Link>.
             </p>
+            <div className="my-4">
+              <p className="text-sm">Or, sign up with</p>
+              <OAuth />
+            </div>
           </div>
         </form>
       </div>
