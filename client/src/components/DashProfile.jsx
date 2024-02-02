@@ -1,96 +1,225 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import { CircularProgressbar } from "react-circular-progressbar";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../redux/user/userSlice.js";
+import "react-circular-progressbar/dist/styles.css";
 
 export default function DashProfile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [editMode, setEditMode] = useState(false);
-  const hadleChange = async (e) => {};
+  const fileRef = useRef(null);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePerc(Math.round(progress));
+      },
+      (error) => {
+        setFileUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, profilePic: downloadURL })
+        );
+      }
+    );
+  };
+  const handleChange = async (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
   const handleUpdate = async (e) => {
     e.preventDefault();
-    console.log("handlesubmit");
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(updateUserSuccess(data));
+        console.log("hello");
+      } else {
+        dispatch(updateUserFailure(data.message));
+      }
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
   };
   return (
     <>
       {editMode ? (
         <div className="w-full">
           <h1 className="text-2xl sm:text-3xl p-5 m-2">Edit your Profile</h1>
-          <div className="bg-white w-[90%] px-3 py-5 sm:p-6 mx-auto flex rounded-lg">
-            <div className="flex flex-col gap-4 w-full sm:px-10">
-              <form
-                onSubmit={handleUpdate}
-                className="flex flex-col gap-3 w-full"
-              >
-                <input type="file" hidden />
-                <img
-                  src={currentUser.profilePic}
-                  alt=""
-                  className="w-32 h-32 object-cover rounded-full"
-                />
-                <div className="flex flex-wrap gap-3 sm:gap-6">
-                  <div className="flex flex-col w-full sm:w-1/2">
-                    <label htmlFor="firstName" className="span1 text-xs">
-                      First Name
-                    </label>
+          <div className="bg-white w-[90%] px-5 py-10 mx-auto flex rounded-lg">
+            <div className="flex flex-col gap-4 w-full">
+              <form onSubmit={handleUpdate} className=" w-full">
+                <div className="flex sm:flex-row flex-col gap-3">
+                  <div className="flex flex-1 items-center justify-center">
                     <input
-                      type="text"
-                      id="firstName"
-                      placeholder="Enter your first name"
-                      onChange={hadleChange}
-                      defaultValue={currentUser.firstName}
-                      className="input"
+                      onChange={(e) => setFile(e.target.files[0])}
+                      hidden
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
                     />
+                    <div className="relative self-center cursor-pointer shadow-md overflow-hidden rounded-full">
+                      {filePerc && (
+                        <CircularProgressbar
+                          value={filePerc || 0}
+                          text={`${filePerc}%`}
+                          strokeWidth={5}
+                          styles={{
+                            root: {
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                            },
+                            path: {
+                              stroke: `rgba(62, 152, 199, ${filePerc / 100})`,
+                            },
+                          }}
+                        />
+                      )}
+                      <img
+                        src={
+                          file
+                            ? URL.createObjectURL(file)
+                            : currentUser.profilePic
+                        }
+                        onClick={() => fileRef.current.click()}
+                        alt="user"
+                        className={`rounded-full w-32 h-32 sm:w-52 sm:h-52 object-cover border-8 border-[lightgray] ${
+                          filePerc && filePerc < 100 && "opacity-60"
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col w-full sm:w-1/2">
-                    <label htmlFor="lastName" className="span1 text-xs">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      placeholder="Enter your last name"
-                      onChange={hadleChange}
-                      defaultValue={currentUser.lastName}
-                      className="input"
-                    />
-                  </div>
-                  <div className="flex flex-col w-full sm:w-1/2">
-                    <label htmlFor="email" className="span1 text-xs">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      placeholder="Enter your email"
-                      onChange={hadleChange}
-                      defaultValue={currentUser.email}
-                      className="input"
-                    />
-                  </div>
-                  <div className="flex flex-col w-full sm:w-1/2">
-                    <label htmlFor="password" className="span1 text-xs">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="Enter your new password"
-                      onChange={hadleChange}
-                      defaultValue={currentUser.password}
-                      className="input"
-                    />
+
+                  <div className="flex-1 gap-3 sm:gap-6 px-3">
+                    <div className="flex flex-col w-full my-3">
+                      <label htmlFor="firstName" className="span1 text-xs">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        placeholder="Enter your first name"
+                        onChange={handleChange}
+                        defaultValue={currentUser.firstName}
+                        className="input"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full my-3 ">
+                      <label htmlFor="lastName" className="span1 text-xs">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        placeholder="Enter your last name"
+                        onChange={handleChange}
+                        defaultValue={currentUser.lastName}
+                        className="input"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full my-3 ">
+                      <label htmlFor="email" className="span1 text-xs">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        onChange={handleChange}
+                        defaultValue={currentUser.email}
+                        className="input"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full my-3 ">
+                      <label htmlFor="mobile" className="span1 text-xs">
+                        Mobile
+                      </label>
+                      <input
+                        type="text"
+                        id="mobile"
+                        placeholder="Enter your mobile"
+                        onChange={handleChange}
+                        defaultValue={currentUser.mobile}
+                        className="input"
+                      />
+                    </div>
+
+                    <div className="flex flex-col w-full my-3 ">
+                      <label htmlFor="password" className="span1 text-xs">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your new password"
+                        onChange={handleChange}
+                        defaultValue={"********"}
+                        className="input"
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex gap-3 mt-3">
+                {fileUploadError && (
+                  <p className="text-sm text-red-600">Error occured!</p>
+                )}
+                <div className="flex gap-3 mt-3 justify-center">
                   <button
                     type="button"
                     onClick={() => setEditMode(false)}
                     className="button"
                   >
-                    Cancel Update
+                    Go Back
                   </button>
-                  <button type="submit" className="button2">
+                  <button
+                    className="button"
+                    onClick={() => handleFileUpload(file)}
+                    disabled={!file}
+                  >
+                    Check Image
+                  </button>
+                  <button
+                    type="submit"
+                    className="button2"
+                    onClick={() => handleUpdate()}
+                  >
                     Update
                   </button>
                 </div>
