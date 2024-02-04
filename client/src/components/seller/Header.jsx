@@ -93,7 +93,9 @@ export default function Header() {
           </form>
           <div className="flex justify-between mt-2 px-3">
             <span className="text-xs underline text-blue-500 ">
-              Forgot Password ?
+              <Link to={"/sellercenter?tab=reset-password&role=seller"}>
+                Forgot Password ?
+              </Link>
             </span>
             {error && <p className="text-xs text-red-500">{error}</p>}
           </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Auth from "./Auth";
+import ResetPassword from "../ResetPassword";
 
 export default function PageController() {
   const location = useLocation();
@@ -14,5 +15,10 @@ export default function PageController() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
-  return <div>{tab === "auth" && <Auth />}</div>;
+  return (
+    <div>
+      {tab === "auth" && <Auth />}
+      {tab === "reset-password" && <ResetPassword />}
+    </div>
+  );
 }
