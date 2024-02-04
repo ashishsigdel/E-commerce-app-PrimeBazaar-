@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { Spinner } from "flowbite-react";
 import { useRef, useState } from "react";
 import {
   getDownloadURL,
@@ -181,6 +182,19 @@ export default function DashProfile() {
                         className="input"
                       />
                     </div>
+                    <div className="flex flex-col w-full my-3 ">
+                      <label htmlFor="address" className="span1 text-xs">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        id="address"
+                        placeholder="Enter your address"
+                        onChange={handleChange}
+                        defaultValue={currentUser.address}
+                        className="input"
+                      />
+                    </div>
 
                     <div className="flex flex-col w-full my-3 ">
                       <label htmlFor="password" className="span1 text-xs">
@@ -220,7 +234,7 @@ export default function DashProfile() {
                     className="button2"
                     onClick={() => handleUpdate()}
                   >
-                    Update
+                    {loading ? <Spinner /> : "Update"}
                   </button>
                 </div>
               </form>

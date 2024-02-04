@@ -1,17 +1,24 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { BiBuoy } from "react-icons/bi";
 import {
   HiHeart,
-  HiLocationMarker,
   HiReceiptRefund,
   HiReceiptTax,
   HiStar,
+  HiTrash,
   HiUser,
-  HiUserCircle,
 } from "react-icons/hi";
 import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from "../redux/user/userSlice";
+
 export default function SideBar() {
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const location = useLocation();
   const [tab, setTab] = useState("");
   useEffect(() => {
@@ -21,6 +28,23 @@ export default function SideBar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
+  const handleDeleteUser = async () => {
+    dispatch(deleteUserStart());
+    try {
+      const res = await fetch(`/api/user/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess(data));
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
   return (
     <Sidebar
       aria-label="Sidebar with content separator example"
@@ -49,6 +73,17 @@ export default function SideBar() {
           </Sidebar.Item>
           <Sidebar.Item href="#" className="my-3" icon={HiHeart}>
             My Wishlists
+          </Sidebar.Item>
+        </Sidebar.ItemGroup>
+
+        <Sidebar.ItemGroup>
+          <Sidebar.Item
+            href="#"
+            className="my-3"
+            icon={HiTrash}
+            onClick={handleDeleteUser}
+          >
+            Delete My account
           </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
