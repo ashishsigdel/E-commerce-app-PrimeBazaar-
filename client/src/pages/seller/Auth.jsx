@@ -1,12 +1,13 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Spinner } from "flowbite-react";
-import Header from "../../components/seller/Header";
+import SignIn from "./SignIn";
 
 export default function Auth() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [formReset, setFormReset] = useState("");
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -19,6 +20,7 @@ export default function Auth() {
     try {
       setError(null);
       setLoading(true);
+      setFormReset("");
       if (formData.password === formData.repassword) {
         const res = await fetch("/api/user/register-admin", {
           method: "POST",
@@ -30,13 +32,16 @@ export default function Auth() {
         const data = await res.json();
         if (res.ok) {
           setLoading(false);
+          setFormReset("Sign up success, Proceed to Login.");
         } else {
           setLoading(false);
+          setFormReset("");
           setError(data.message);
           return;
         }
       } else {
         setLoading(false);
+        setFormReset("");
         setError("Password does not match.");
       }
     } catch (error) {
@@ -47,7 +52,7 @@ export default function Auth() {
 
   return (
     <div className="bg-orange-500 sm:max-h-screen ">
-      <Header />
+      <SignIn />
       <div className="flex sm:flex-row flex-col gap-2 sm:mx-auto max-w-7xl pb-3 pt-3 sm:pt-0 mx-2 sm:px-2">
         <div className="flex-1 py-5 mt-10 px-10">
           <h1 className="sm:text-7xl text-5xl font-bold text-white">
@@ -140,6 +145,10 @@ export default function Auth() {
                   />
                 </div>
                 {error && <p className="my-2 text-sm text-red-500">{error}</p>}
+                {formReset && (
+                  <p className="my-2 text-sm text-green-500">{formReset}</p>
+                )}
+
                 <button color="" type="submit" className="w-full button">
                   {loading ? <Spinner /> : "Sign up"}
                 </button>

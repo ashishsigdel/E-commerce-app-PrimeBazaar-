@@ -8,7 +8,7 @@ import {
   signInFailure,
 } from "../../redux/user/userSlice.js";
 
-export default function Header() {
+export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ export default function Header() {
       const data = await res.json();
       if (res.ok) {
         dispatch(signInSuccess(data));
-        navigate("/sellercenter?tab=home&role=seller");
+        navigate("/sellercenter?tab=dashboard&role=seller");
       } else {
         dispatch(signInFailure(data.message));
         return;

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Auth from "./Auth";
 import ResetPassword from "../ResetPassword";
+import Dashboard from "./Dashboard";
 
 export default function PageController() {
   const location = useLocation();
   const [tab, setTab] = useState("");
-  console.log(tab);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -19,6 +19,7 @@ export default function PageController() {
     <div>
       {tab === "auth" && <Auth />}
       {tab === "reset-password" && <ResetPassword />}
+      {tab === "dashboard" && <Dashboard />}
     </div>
   );
 }

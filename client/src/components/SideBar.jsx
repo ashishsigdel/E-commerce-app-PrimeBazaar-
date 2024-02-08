@@ -1,14 +1,19 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import {
+  HiChat,
   HiHeart,
+  HiOutlineBriefcase,
+  HiPlusCircle,
   HiReceiptRefund,
   HiReceiptTax,
+  HiRefresh,
+  HiShoppingBag,
   HiStar,
   HiTrash,
   HiUser,
 } from "react-icons/hi";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteUserStart,
@@ -21,11 +26,14 @@ export default function SideBar() {
   const dispatch = useDispatch();
   const location = useLocation();
   const [tab, setTab] = useState("");
+  const [page, setPage] = useState("");
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
+    const pageFromUrl = urlParams.get("page");
     if (tabFromUrl) {
       setTab(tabFromUrl);
+      setPage(pageFromUrl);
     }
   }, [location.search]);
 
@@ -46,47 +54,109 @@ export default function SideBar() {
     }
   };
   return (
-    <Sidebar
-      aria-label="Sidebar with content separator example"
-      className="w-full md:w-56"
-    >
-      <Sidebar.Items>
-        <Sidebar.ItemGroup>
-          <span className="text-lg font-semibold ">Manage my Profile</span>
-          <Sidebar.Item
-            href="#"
-            className="my-3"
-            icon={HiUser}
-            active={tab === "profile"}
-          >
-            My Profile
-          </Sidebar.Item>
-          <span className="text-lg font-semibold ">My Activities</span>
-          <Sidebar.Item href="#" className="my-3" icon={HiReceiptRefund}>
-            My Returns
-          </Sidebar.Item>
-          <Sidebar.Item href="#" className="my-3" icon={HiReceiptTax}>
-            My Cancellations
-          </Sidebar.Item>
-          <Sidebar.Item href="#" className="my-3" icon={HiStar}>
-            My Reviews
-          </Sidebar.Item>
-          <Sidebar.Item href="#" className="my-3" icon={HiHeart}>
-            My Wishlists
-          </Sidebar.Item>
-        </Sidebar.ItemGroup>
+    <>
+      {currentUser.role === "user" ? (
+        <Sidebar
+          aria-label="Sidebar with content separator example"
+          className="w-full md:w-56"
+        >
+          <Sidebar.Items>
+            <Sidebar.ItemGroup>
+              <span className="text-lg font-semibold ">Manage my Profile</span>
+              <Sidebar.Item
+                href="#"
+                className="my-3"
+                icon={HiUser}
+                active={tab === "profile"}
+              >
+                My Profile
+              </Sidebar.Item>
+              <span className="text-lg font-semibold ">My Activities</span>
+              <Sidebar.Item href="#" className="my-3" icon={HiReceiptRefund}>
+                My Returns
+              </Sidebar.Item>
+              <Sidebar.Item href="#" className="my-3" icon={HiReceiptTax}>
+                My Cancellations
+              </Sidebar.Item>
+              <Sidebar.Item href="#" className="my-3" icon={HiStar}>
+                My Reviews
+              </Sidebar.Item>
+              <Sidebar.Item href="#" className="my-3" icon={HiHeart}>
+                My Wishlists
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
 
-        <Sidebar.ItemGroup>
-          <Sidebar.Item
-            href="#"
-            className="my-3"
-            icon={HiTrash}
-            onClick={handleDeleteUser}
-          >
-            Delete My account
-          </Sidebar.Item>
-        </Sidebar.ItemGroup>
-      </Sidebar.Items>
-    </Sidebar>
+            <Sidebar.ItemGroup>
+              <Sidebar.Item
+                href="#"
+                className="my-3"
+                icon={HiTrash}
+                onClick={handleDeleteUser}
+              >
+                Delete My account
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+          </Sidebar.Items>
+        </Sidebar>
+      ) : (
+        <Sidebar
+          aria-label="Sidebar with content separator example"
+          className="w-full md:w-56"
+        >
+          <Sidebar.Items>
+            <Sidebar.ItemGroup>
+              <span className="text-lg font-semibold ">Your Account</span>
+              <Link
+                to={"/sellercenter?tab=dashboard&page=profile&role=seller#"}
+              >
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiUser}
+                  active={page === "profile"}
+                >
+                  My Profile
+                </Sidebar.Item>
+              </Link>
+              <Sidebar.Item href="#" className="my-3" icon={HiShoppingBag}>
+                My Products
+              </Sidebar.Item>
+              <Link
+                to={
+                  "/sellercenter?tab=dashboard&page=create-product&role=seller"
+                }
+              >
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiPlusCircle}
+                  active={page === "create-product"}
+                >
+                  Add Products
+                </Sidebar.Item>
+              </Link>
+              <Sidebar.Item href="#" className="my-3" icon={HiRefresh}>
+                Order Requests
+              </Sidebar.Item>
+              <Sidebar.Item href="#" className="my-3" icon={HiChat}>
+                Review Comments
+              </Sidebar.Item>
+              <Sidebar.Item href="#" className="my-3" icon={HiOutlineBriefcase}>
+                Delevered Progress
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+
+            <Sidebar.ItemGroup>
+              <Sidebar.Item
+                href="#"
+                className="my-3"
+                icon={HiTrash}
+                onClick={handleDeleteUser}
+              >
+                Delete My account
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+          </Sidebar.Items>
+        </Sidebar>
+      )}
+    </>
   );
 }

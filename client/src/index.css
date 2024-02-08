@@ -47,3 +47,7 @@ body {
 .span2 {
   color: gray;
 }
+
+.ql-editor {
+  font-size: 1.05rem;
+}
