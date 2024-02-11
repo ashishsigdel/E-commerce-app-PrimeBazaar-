@@ -107,7 +107,7 @@ export default function UploadImage() {
         dispatch(uploadImageFailure(data.message));
       }
       dispatch(uploadImageSuccess());
-      navigate(`/sellercenter?tab=dashboard&page=my-products&role=seller`);
+      navigate(`/sellercenter?tab=dashboard&page=products&role=seller`);
     } catch (error) {
       dispatch(uploadImageFailure(error.message));
     }

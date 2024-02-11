@@ -117,9 +117,17 @@ export default function SideBar() {
                   My Profile
                 </Sidebar.Item>
               </Link>
-              <Sidebar.Item href="#" className="my-3" icon={HiShoppingBag}>
-                My Products
-              </Sidebar.Item>
+              <Link
+                to={"/sellercenter?tab=dashboard&page=products&role=seller"}
+              >
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiShoppingBag}
+                  active={page === "products"}
+                >
+                  My Products
+                </Sidebar.Item>
+              </Link>
               <Link
                 to={
                   "/sellercenter?tab=dashboard&page=create-product&role=seller"

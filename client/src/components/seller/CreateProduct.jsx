@@ -35,10 +35,10 @@ export default function CreateProduct() {
       const data = await res.json();
       console.log(data);
       if (res.ok) {
-        dispatch(createProductSuccess(data));
         navigate(
           `/sellercenter?tab=dashboard&page=create-product-images&id=${currentProduct._id}&role=seller`
         );
+        dispatch(createProductSuccess(data));
       } else {
         dispatch(createProductFailure(data.message));
       }
@@ -118,6 +118,7 @@ export default function CreateProduct() {
                 <option value="mobile">Mobile</option>
                 <option value="laptop">Laptop</option>
                 <option value="tv">TV</option>
+                <option value="tv">Shoes</option>
               </Select>
             </div>
           </div>
