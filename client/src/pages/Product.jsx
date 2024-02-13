@@ -9,17 +9,18 @@ import {
   IoServerOutline,
   IoShareSocialOutline,
 } from "react-icons/io5";
-import { GiMoneyStack, GiShield, GiShieldDisabled } from "react-icons/gi";
+import { GiMoneyStack, GiShieldDisabled } from "react-icons/gi";
+import ReviewRating from "../components/ReviewRating";
 
 export default function Product() {
   const { currentUser } = useSelector((state) => state.user);
   const { productSlug } = useParams();
   const [product, setProduct] = useState({
     images: [],
+    ratings: [],
   });
   const solidStar = product.totalrating;
   const hollowStar = 5 - solidStar;
-  console.log(solidStar, hollowStar);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,7 +61,7 @@ export default function Product() {
               ))}
             </div>
           </div>
-          <div className="w-2/5 py-4 px-3 ">
+          <div className="w-rull sm:w-2/5 py-4 px-3 ">
             <div className="text-2xl">
               <h1 className="font-semibold">{product.title}</h1>
             </div>
@@ -100,7 +101,12 @@ export default function Product() {
             </div>
             <div className="flex gap-3 my-4 items-center">
               <p className="">Quantity: </p>
-              <input type="number" min={1} max={product.quantity} />
+              <input
+                type="number"
+                min={1}
+                defaultValue={1}
+                max={product.quantity}
+              />
             </div>
             <div className="flex gap-3 my-10">
               <button type="button" className="button2 w-full flex-1">
@@ -187,6 +193,7 @@ export default function Product() {
           dangerouslySetInnerHTML={{ __html: product && product.description }}
         ></div>
       </div>
+      <ReviewRating product={product} />
     </>
   );
 }
