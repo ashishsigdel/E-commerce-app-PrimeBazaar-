@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { IoIosStar, IoIosStarOutline } from "react-icons/io";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   IoBusOutline,
+  IoHeart,
   IoHeartOutline,
   IoLocation,
   IoServerOutline,
   IoShareSocialOutline,
+  IoStar,
+  IoStarOutline,
 } from "react-icons/io5";
 import { GiMoneyStack, GiShieldDisabled } from "react-icons/gi";
 import ReviewRating from "../components/ReviewRating";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../redux/user/userSlice";
 
 export default function Product() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const { productSlug } = useParams();
   const [product, setProduct] = useState({
     images: [],
     ratings: [],
   });
+  const [user, setUser] = useState({});
   const solidStar = product.totalrating;
   const hollowStar = 5 - solidStar;
 
@@ -37,6 +47,31 @@ export default function Product() {
 
     fetchProduct();
   }, [productSlug]);
+
+  const handleWishlist = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/product/wishlist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prodId: product._id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(updateUserSuccess(data));
+      } else {
+        dispatch(updateUserFailure(data.message));
+      }
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const isProductInWishlist = currentUser.wishlist.includes(product._id);
+
   return (
     <>
       <div className="max-w-6xl bg-white w-full flex flex-col mx-auto my-5 p-2">
@@ -85,9 +120,18 @@ export default function Product() {
                 <span className="span2 text-sm">Avaiable: </span>
                 <h1 className="text-blue-400 text-sm">{product.quantity}</h1>
               </div>
-              <div className="flex gap-4 span">
+              <div className="flex gap-4 items-center">
                 <IoShareSocialOutline size={20} />
-                <IoHeartOutline size={20} />
+                <div
+                  className="span hover:cursor-pointer"
+                  onClick={handleWishlist}
+                >
+                  {isProductInWishlist ? (
+                    <IoHeart size={25} className="text-red-500" />
+                  ) : (
+                    <IoHeartOutline size={25} />
+                  )}
+                </div>
               </div>
             </div>
             <hr />

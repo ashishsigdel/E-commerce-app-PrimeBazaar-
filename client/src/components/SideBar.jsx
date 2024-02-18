@@ -63,14 +63,15 @@ export default function SideBar() {
           <Sidebar.Items>
             <Sidebar.ItemGroup>
               <span className="text-lg font-semibold ">Manage my Profile</span>
-              <Sidebar.Item
-                href="#"
-                className="my-3"
-                icon={HiUser}
-                active={tab === "profile"}
-              >
-                My Profile
-              </Sidebar.Item>
+              <Link to={"?tab=profile"}>
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiUser}
+                  active={tab === "profile"}
+                >
+                  My Profile
+                </Sidebar.Item>
+              </Link>
               <span className="text-lg font-semibold ">My Activities</span>
               <Sidebar.Item href="#" className="my-3" icon={HiReceiptRefund}>
                 My Returns
@@ -81,9 +82,15 @@ export default function SideBar() {
               <Sidebar.Item href="#" className="my-3" icon={HiStar}>
                 My Reviews
               </Sidebar.Item>
-              <Sidebar.Item href="#" className="my-3" icon={HiHeart}>
-                My Wishlists
-              </Sidebar.Item>
+              <Link to={"?tab=wishlists"}>
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiHeart}
+                  active={tab === "wishlists"}
+                >
+                  My Wishlists
+                </Sidebar.Item>
+              </Link>
             </Sidebar.ItemGroup>
 
             <Sidebar.ItemGroup>

@@ -40,7 +40,9 @@ export default function ReviewRating({ product }) {
     const starRatings = product.ratings.filter(
       (rating) => rating.star === star
     ).length;
-    return totalRatings === 0 ? 0 : (starRatings / totalRatings) * 100;
+    const percentage =
+      totalRatings === 0 ? 0 : (starRatings / totalRatings) * 100;
+    return percentage.toFixed(0);
   };
 
   const handleSubmit = async (e) => {
@@ -119,28 +121,58 @@ export default function ReviewRating({ product }) {
               percentFilled={calculatePercentage(5)}
               className="mb-2"
             >
-              5 star
+              <div className="flex gap-1 text-yellow-400">
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+              </div>
             </Rating.Advanced>
             <Rating.Advanced
               percentFilled={calculatePercentage(4)}
               className="mb-2"
             >
-              4 star
+              <div className="flex gap-1 text-yellow-400">
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStarOutline />
+              </div>
             </Rating.Advanced>
             <Rating.Advanced
               percentFilled={calculatePercentage(3)}
               className="mb-2"
             >
-              3 star
+              <div className="flex gap-1 text-yellow-400">
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+              </div>
             </Rating.Advanced>
             <Rating.Advanced
               percentFilled={calculatePercentage(2)}
               className="mb-2"
             >
-              2 star
+              <div className="flex gap-1 text-yellow-400">
+                <IoIosStar />
+                <IoIosStar />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+              </div>
             </Rating.Advanced>
             <Rating.Advanced percentFilled={calculatePercentage(1)}>
-              1 star
+              <div className="flex gap-1 text-yellow-400">
+                <IoIosStar />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+                <IoIosStarOutline />
+              </div>
             </Rating.Advanced>
           </div>
         </div>
