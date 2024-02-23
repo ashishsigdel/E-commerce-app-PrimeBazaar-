@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Button, Carousel, Modal } from "flowbite-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoIosStar, IoIosStarOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,8 +10,6 @@ import {
   IoLocation,
   IoServerOutline,
   IoShareSocialOutline,
-  IoStar,
-  IoStarOutline,
 } from "react-icons/io5";
 import { GiMoneyStack, GiShieldDisabled } from "react-icons/gi";
 import ReviewRating from "../components/ReviewRating";
@@ -19,16 +18,24 @@ import {
   updateUserSuccess,
   updateUserFailure,
 } from "../redux/user/userSlice";
+import {
+  HiOutlineBadgeCheck,
+  HiOutlineExclamationCircle,
+} from "react-icons/hi";
 
 export default function Product() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { productSlug } = useParams();
   const [product, setProduct] = useState({
     images: [],
     ratings: [],
   });
-  const [user, setUser] = useState({});
+  const [productCount, setProductCount] = useState(1);
+  console.log(productCount);
+  const [openModal, setOpenModal] = useState(false);
+  const [openModalAddtoCart, setOpenModalAddtoCart] = useState(false);
   const solidStar = product.totalrating;
   const hollowStar = 5 - solidStar;
 
@@ -70,32 +77,93 @@ export default function Product() {
     }
   };
 
-  const isProductInWishlist = currentUser.wishlist.includes(product._id);
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/user/cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cart: [
+            {
+              id: product._id,
+              count: productCount,
+              color: product.color[0],
+            },
+          ],
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setOpenModalAddtoCart(true);
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const handleBuyNow = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/user/cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cart: [
+            {
+              id: product._id,
+              count: productCount,
+              color: product.color[0],
+            },
+          ],
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        navigate("/cart");
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const isProductInWishlist =
+    currentUser?.wishlist?.includes(product._id) || false;
+
+  function onCloseModal() {
+    setOpenModal(false);
+    setOpenModalAddtoCart(false);
+  }
 
   return (
     <>
       <div className="max-w-6xl bg-white w-full flex flex-col mx-auto my-5 p-2">
         <div className="flex sm:flex-row flex-col">
-          <div className="flex-1">
-            <div>
-              <img
-                src={product.images[0]}
-                alt={product.title}
-                className="w-full"
-              />
-            </div>
-            <div className="flex mx-auto gap-5 w-20 h-20 border-gray-600 mt-3">
-              {product.images.map((image, index) => (
-                <div key={index} className="w-full h-full">
-                  <img
-                    src={image}
-                    alt={`Product ${index + 1}`}
-                    className="w-16 h16 object-contain"
-                  />
-                </div>
-              ))}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-full h-full">
+              <div className="grid h-96 gap-4 xl:h-80 2xl:h-96">
+                <Carousel className="">
+                  {product.images.map((image, index) => (
+                    <div key={index} className="w-full h-full">
+                      <img
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="aspect-square object-contain"
+                      />
+                    </div>
+                  ))}
+                </Carousel>
+              </div>
             </div>
           </div>
+
           <div className="w-rull sm:w-2/5 py-4 px-3 ">
             <div className="text-2xl">
               <h1 className="font-semibold">{product.title}</h1>
@@ -122,16 +190,25 @@ export default function Product() {
               </div>
               <div className="flex gap-4 items-center">
                 <IoShareSocialOutline size={20} />
-                <div
-                  className="span hover:cursor-pointer"
-                  onClick={handleWishlist}
-                >
-                  {isProductInWishlist ? (
-                    <IoHeart size={25} className="text-red-500" />
-                  ) : (
+                {currentUser ? (
+                  <div
+                    className="span hover:cursor-pointer"
+                    onClick={handleWishlist}
+                  >
+                    {isProductInWishlist ? (
+                      <IoHeart size={25} className="text-red-500" />
+                    ) : (
+                      <IoHeartOutline size={25} />
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => setOpenModal(true)}
+                    className="span hover:cursor-pointer"
+                  >
                     <IoHeartOutline size={25} />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
             <hr />
@@ -143,23 +220,31 @@ export default function Product() {
                 {product.price}
               </h1>
             </div>
-            <div className="flex gap-3 my-4 items-center">
-              <p className="">Quantity: </p>
-              <input
-                type="number"
-                min={1}
-                defaultValue={1}
-                max={product.quantity}
-              />
-            </div>
-            <div className="flex gap-3 my-10">
-              <button type="button" className="button2 w-full flex-1">
-                Buy Now
-              </button>
-              <button type="button" className="button w-full flex-1">
-                Add to Cart
-              </button>
-            </div>
+            <form onSubmit={handleAddToCart}>
+              <div className="flex gap-3 my-4 items-center">
+                <p className="">Quantity: </p>
+                <input
+                  type="number"
+                  min={1}
+                  defaultValue={1}
+                  max={product.quantity}
+                  onChange={(e) => setProductCount(e.target.value)}
+                />
+              </div>
+
+              <div className="flex gap-3 my-10">
+                <button
+                  onClick={handleBuyNow}
+                  type="button"
+                  className="button2 w-full flex-1"
+                >
+                  Buy Now
+                </button>
+                <button type="submit" className="button w-full flex-1">
+                  Add to Cart
+                </button>
+              </div>
+            </form>
           </div>
           <div className="flex-1 p-3 bg-slate-100">
             <div className="my-3">
@@ -238,6 +323,53 @@ export default function Product() {
         ></div>
       </div>
       <ReviewRating product={product} />
+
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => setOpenModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              You have to signin first to add wishlist.
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="gray" onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+              <Link to={"/sign-in"}>
+                <Button color="green" onClick={() => setOpenModal(false)}>
+                  {"Yes, Login"}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={openModalAddtoCart}
+        onClose={() => setOpenModalAddtoCart(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineBadgeCheck className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Successfully added to cart
+            </h3>
+            <Link to={"/cart"}>
+              <button className="button">Go to cart</button>
+            </Link>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

@@ -89,17 +89,18 @@ export default function Header() {
                   className="p-1 w-10 md:hidden inline"
                 />
               </div>
-              <div className="hidden sm:inline">
+              {/* <div className="hidden sm:inline">
                 <Dropdown label="Categories" inline>
                   <Dropdown.Item>Dashboard</Dropdown.Item>
                   <Dropdown.Item>Settings</Dropdown.Item>
                   <Dropdown.Item>Earnings</Dropdown.Item>
                   <Dropdown.Item>Sign out</Dropdown.Item>
                 </Dropdown>
-              </div>
+              </div> */}
               <form>
                 <input
                   type="text"
+                  placeholder="Search Product Here..."
                   className="rounded-lg h-8 md:w-[550px] w-36 active:outline-none border-none text-gray-600"
                 />
               </form>
@@ -127,14 +128,27 @@ export default function Header() {
                           </span>
                         </Dropdown.Item>
                       </Link>
-                      <Dropdown.Item className="flex gap-3 px-8 py-3">
-                        <IoBagAddOutline size={20} className="span mr-4" />
-                        <span className="span text-md">My Orders</span>
-                      </Dropdown.Item>
-                      <Dropdown.Item className="flex gap-3 px-8 py-3">
-                        <IoIosHeartEmpty size={20} className="span mr-4" />
-                        <span className="span text-md">My Wishlists</span>
-                      </Dropdown.Item>
+                      <Link to="/order-status">
+                        <Dropdown.Item className="flex gap-3 px-8 py-3">
+                          <IoBagAddOutline size={20} className="span mr-4" />
+                          <span className="span text-md">My Orders</span>
+                        </Dropdown.Item>
+                      </Link>
+                      <Link to={"/dashboard?tab=wishlists"}>
+                        <Dropdown.Item className="flex gap-3 px-8 py-3">
+                          <IoIosHeartEmpty size={20} className="span mr-4" />
+                          <span className="span text-md">My Wishlists</span>
+                        </Dropdown.Item>
+                      </Link>
+                      <Link to={"/cart"}>
+                        <Dropdown.Item className="flex gap-3 px-8 py-3">
+                          <HiOutlineShoppingCart
+                            size={20}
+                            className="span mr-4"
+                          />
+                          <span className="span text-md">View Cart</span>
+                        </Dropdown.Item>
+                      </Link>
                       <Dropdown.Item className="flex gap-3 px-8 py-3">
                         <IoStarOutline size={20} className="span mr-4" />
                         <span className="span text-md">My Reviews</span>
@@ -164,9 +178,9 @@ export default function Header() {
                 </div>
               )}
 
-              <div className="hidden sm:inline">
-                <HiOutlineShoppingCart size={20} />
-              </div>
+              <Link to={"/cart"} className="hidden sm:inline">
+                <HiOutlineShoppingCart size={22} />
+              </Link>
             </div>
           </div>
         </header>

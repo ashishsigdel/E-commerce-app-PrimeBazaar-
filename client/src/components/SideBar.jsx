@@ -95,7 +95,6 @@ export default function SideBar() {
 
             <Sidebar.ItemGroup>
               <Sidebar.Item
-                href="#"
                 className="my-3"
                 icon={HiTrash}
                 onClick={handleDeleteUser}
@@ -161,7 +160,6 @@ export default function SideBar() {
 
             <Sidebar.ItemGroup>
               <Sidebar.Item
-                href="#"
                 className="my-3"
                 icon={HiTrash}
                 onClick={handleDeleteUser}

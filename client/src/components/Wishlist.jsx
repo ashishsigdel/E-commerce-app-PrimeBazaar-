@@ -33,7 +33,7 @@ export default function Wishlist() {
 
   return (
     <div>
-      {currentUser.wishlist.length > 0 ? (
+      {currentUser && currentUser.wishlist.length > 0 ? (
         <div className="m-6 p-3 w-full">
           <div className="my-4">
             <h1 className="text-2xl">My Wishlists</h1>
@@ -53,7 +53,7 @@ export default function Wishlist() {
               <Table.Body>
                 <Table.Row>
                   <Table.Cell>
-                    <Link>
+                    <Link to={`/products/${product.slug}`}>
                       <img
                         src={product.images}
                         alt="Product"
@@ -82,14 +82,7 @@ export default function Wishlist() {
         </div>
       ) : (
         <div className="m-6 flex flex-col gap-3">
-          <p className="text-red-500 text-xl">
-            You have no listed product yet.
-          </p>
-          <Link to="/wishlistcenter?tab=dashboard&page=create-product&role=wishlist">
-            <button type="button" className="button">
-              Click Here to Add Product
-            </button>
-          </Link>
+          <p className="text-red-500 text-xl">You have no wishlist yet.</p>
         </div>
       )}
     </div>

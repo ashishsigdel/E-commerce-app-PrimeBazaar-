@@ -5,10 +5,10 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../../firebase.js";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdClose, MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   uploadImageSuccess,
   uploadImageStart,
@@ -16,6 +16,7 @@ import {
 } from "../../redux/product/productSlice.js";
 
 export default function UploadImage() {
+  const location = useLocation();
   const { currentProduct, loading, error } = useSelector(
     (state) => state.product
   );
@@ -29,6 +30,15 @@ export default function UploadImage() {
   const fileRef = useRef(null);
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [id, setId] = useState("");
+  console.log(id);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const idFromUrl = urlParams.get("id");
+    if (idFromUrl) {
+      setId(idFromUrl);
+    }
+  }, [location.search]);
 
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -93,7 +103,7 @@ export default function UploadImage() {
     try {
       if (formData.imageUrls.length < 1)
         return setError("You must upload at least one image");
-      const res = await fetch(`/api/product/upload/${currentProduct._id}`, {
+      const res = await fetch(`/api/product/upload/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +117,7 @@ export default function UploadImage() {
         dispatch(uploadImageFailure(data.message));
       }
       dispatch(uploadImageSuccess());
-      navigate(`/sellercenter?tab=dashboard&page=products&role=seller`);
+      navigate(`/sellercenter?tab=dashboard&page=my-products&role=seller`);
     } catch (error) {
       dispatch(uploadImageFailure(error.message));
     }
@@ -177,14 +187,14 @@ export default function UploadImage() {
             </div>
           </div>
         </div>
-        <div className="flex gap-2 mx-auto">
+        <div className="flex flex-col gap-2 mx-auto">
+          {error && <p className="text-red-700 text-sm">{error}</p>}
           <button
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
             {loading ? "Uploading..." : "Upload Photos"}
           </button>
-          {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
       </form>
     </div>
