@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useNavigate, Link } from "react-router-dom";
+import {
+  applyCouponStart,
+  applyCouponSuccess,
+  applyCouponFailure,
+} from "../redux/user/userSlice";
 
 export default function Cart() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [cartProduct, setCartProduct] = useState({ products: [] }); // Initialize with an empty products array
-  console.log(cartProduct);
+  const [coupon, setCoupon] = useState("");
+  const [totalAfterCoupon, setTotalAfterCoupon] = useState(0);
+  console.log(totalAfterCoupon);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -26,8 +34,30 @@ export default function Cart() {
     fetchCart();
   }, [currentUser]);
 
-  const applyVoucher = async () => {
-    console.log("applying");
+  const applyVoucher = async (e) => {
+    e.preventDefault();
+    setTotalAfterCoupon(0);
+    try {
+      dispatch(applyCouponStart());
+      const res = await fetch(`/api/user/cart/applycoupon`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ coupon: coupon }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTotalAfterCoupon(data);
+        dispatch(applyCouponSuccess());
+      } else {
+        console.log(data.message);
+        dispatch(applyCouponFailure(data.message));
+      }
+    } catch (error) {
+      console.log(error.message);
+      dispatch(applyCouponFailure(error.message));
+    }
   };
 
   const handleOrder = async () => {
@@ -35,6 +65,19 @@ export default function Cart() {
   };
 
   const handleDelete = async (productId) => {
+    const fetchCart = async () => {
+      try {
+        const res = await fetch("/api/user/cart");
+        const data = await res.json();
+        if (res.ok) {
+          setCartProduct(data);
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
     try {
       const res = await fetch(`/api/user/cart/${productId}`, {
         method: "DELETE",
@@ -43,6 +86,7 @@ export default function Cart() {
         },
       });
       if (res.ok) {
+        fetchCart();
         setCartProduct((prevCartProduct) => {
           const updatedProducts = prevCartProduct.products.filter(
             (product) => product.product._id !== productId
@@ -60,22 +104,6 @@ export default function Cart() {
       console.log(error.message);
     }
   };
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const res = await fetch("/api/user/cart");
-        const data = await res.json();
-        if (res.ok) {
-          setCartProduct(data);
-        } else {
-          console.log(data.message);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCart();
-  }, [handleDelete]);
 
   return (
     <>
@@ -134,25 +162,40 @@ export default function Cart() {
               <div className="w-full h-full flex flex-col gap-2">
                 <h1 className="text-xl py-3 w-full">Order Summary: </h1>
                 <p className="text-gray-400">{`Subtotal (${cartProduct.products.length} items)`}</p>
-                <form
-                  onSubmit={applyVoucher}
-                  className="flex gap-3 items-center justify-between"
-                >
-                  <TextInput
-                    id="coupon"
-                    type="text"
-                    placeholder="Enter Voucher Code"
-                  />
-                  <Button type="submit" gradientMonochrome="success">
-                    Apply
-                  </Button>
+                <form onSubmit={applyVoucher}>
+                  <div className="flex gap-3 items-center justify-between">
+                    <TextInput
+                      id="coupon"
+                      type="text"
+                      placeholder="Enter Voucher Code"
+                      onChange={(e) => setCoupon(e.target.value.toUpperCase())}
+                    />
+
+                    <Button type="submit" gradientMonochrome="success">
+                      {loading ? "Applying..." : "Apply"}
+                    </Button>
+                  </div>
+                  {error && <p className="my-2 text-red-500">{error}</p>}
                 </form>
                 <div className="flex justify-between mt-3 border-t pt-3 items-center">
                   <p>Total</p>
-                  <p className="text-2xl text-orange-500">
-                    Rs. {cartProduct.cartTotal}
-                  </p>
+                  <div>
+                    <p className="text-2xl text-orange-500">
+                      Rs. {cartProduct.cartTotal}
+                    </p>
+                    {totalAfterCoupon !== 0 && (
+                      <p className="text-xl text-orange-500">{`- Rs. ${
+                        cartProduct.cartTotal - totalAfterCoupon
+                      }`}</p>
+                    )}
+                  </div>
                 </div>
+                {totalAfterCoupon !== 0 && (
+                  <div className="flex justify-between mt-3 border-t pt-3 items-center">
+                    <p>SubTotal: </p>
+                    <p className="text-2xl text-orange-500">{`Rs. ${totalAfterCoupon}`}</p>
+                  </div>
+                )}
                 <button onClick={handleOrder} className="button my-5">
                   Create Order
                 </button>

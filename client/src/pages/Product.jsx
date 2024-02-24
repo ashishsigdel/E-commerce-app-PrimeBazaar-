@@ -32,6 +32,7 @@ export default function Product() {
     images: [],
     ratings: [],
   });
+  const [role, setRole] = useState("");
   const [productCount, setProductCount] = useState(1);
   console.log(productCount);
   const [openModal, setOpenModal] = useState(false);
@@ -41,6 +42,7 @@ export default function Product() {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setRole("");
       try {
         const res = await fetch(`/api/product/getproduct?slug=${productSlug}`);
         const data = await res.json();
