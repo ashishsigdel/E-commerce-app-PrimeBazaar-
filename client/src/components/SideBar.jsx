@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import {
   HiChat,
   HiHeart,
+  HiOutlineBackspace,
   HiOutlineBriefcase,
   HiPlusCircle,
   HiReceiptRefund,
   HiReceiptTax,
   HiRefresh,
   HiShoppingBag,
+  HiShoppingCart,
   HiStar,
   HiTrash,
   HiUser,
@@ -20,6 +22,7 @@ import {
   deleteUserSuccess,
   deleteUserFailure,
 } from "../redux/user/userSlice";
+import { FaShoppingBag } from "react-icons/fa";
 
 export default function SideBar() {
   const { currentUser } = useSelector((state) => state.user);
@@ -73,12 +76,25 @@ export default function SideBar() {
                 </Sidebar.Item>
               </Link>
               <span className="text-lg font-semibold ">My Activities</span>
-              <Sidebar.Item href="#" className="my-3" icon={HiReceiptRefund}>
-                My Returns
-              </Sidebar.Item>
-              <Sidebar.Item href="#" className="my-3" icon={HiReceiptTax}>
-                My Cancellations
-              </Sidebar.Item>
+
+              <Link to={"?tab=order-status"}>
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiShoppingCart}
+                  active={tab === "order-status"}
+                >
+                  My Orders
+                </Sidebar.Item>
+              </Link>
+              <Link to={"?tab=purchases"}>
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiOutlineBriefcase}
+                  active={tab === "purchases"}
+                >
+                  My Purchases
+                </Sidebar.Item>
+              </Link>
               <Sidebar.Item href="#" className="my-3" icon={HiStar}>
                 My Reviews
               </Sidebar.Item>

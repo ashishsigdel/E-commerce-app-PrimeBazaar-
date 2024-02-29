@@ -15,7 +15,8 @@ export default function Cart() {
   const [cartProduct, setCartProduct] = useState({ products: [] }); // Initialize with an empty products array
   const [coupon, setCoupon] = useState("");
   const [totalAfterCoupon, setTotalAfterCoupon] = useState(0);
-  console.log(totalAfterCoupon);
+  const [couponApply, setCouponApply] = useState(false);
+  console.log(couponApply);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -37,6 +38,19 @@ export default function Cart() {
   const applyVoucher = async (e) => {
     e.preventDefault();
     setTotalAfterCoupon(0);
+    const fetchCart = async () => {
+      try {
+        const res = await fetch("/api/user/cart");
+        const data = await res.json();
+        if (res.ok) {
+          setCartProduct(data);
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
     try {
       dispatch(applyCouponStart());
       const res = await fetch(`/api/user/cart/applycoupon`, {
@@ -49,6 +63,8 @@ export default function Cart() {
       const data = await res.json();
       if (res.ok) {
         setTotalAfterCoupon(data);
+        setCouponApply(true);
+        fetchCart();
         dispatch(applyCouponSuccess());
       } else {
         console.log(data.message);
@@ -61,7 +77,40 @@ export default function Cart() {
   };
 
   const handleOrder = async () => {
-    navigate("/order-status");
+    const clearCart = async () => {
+      try {
+        const res = await fetch("/api/user/empty-cart", {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          navigate("/dashboard?tab=order-status");
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    try {
+      const res = await fetch("/api/user/cart/cash-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          COD: true,
+          couponApplied: couponApply,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        clearCart();
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const handleDelete = async (productId) => {
@@ -184,18 +233,19 @@ export default function Cart() {
                       Rs. {cartProduct.cartTotal}
                     </p>
                     {totalAfterCoupon !== 0 && (
-                      <p className="text-xl text-orange-500">{`- Rs. ${
-                        cartProduct.cartTotal - totalAfterCoupon
-                      }`}</p>
+                      <p className="text-xl text-orange-500">{`- Rs. ${(
+                        cartProduct.cartTotal - cartProduct.totalAfterDiscount
+                      ).toFixed(2)}`}</p>
                     )}
                   </div>
                 </div>
-                {totalAfterCoupon !== 0 && (
-                  <div className="flex justify-between mt-3 border-t pt-3 items-center">
-                    <p>SubTotal: </p>
-                    <p className="text-2xl text-orange-500">{`Rs. ${totalAfterCoupon}`}</p>
-                  </div>
-                )}
+                {totalAfterCoupon !== 0 &&
+                  totalAfterCoupon === cartProduct.totalAfterDiscount && (
+                    <div className="flex justify-between mt-3 border-t pt-3 items-center">
+                      <p>SubTotal: </p>
+                      <p className="text-2xl text-orange-500">{`Rs. ${cartProduct.totalAfterDiscount}`}</p>
+                    </div>
+                  )}
                 <button onClick={handleOrder} className="button my-5">
                   Create Order
                 </button>

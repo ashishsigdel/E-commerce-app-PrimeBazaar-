@@ -128,7 +128,7 @@ export default function Header() {
                           </span>
                         </Dropdown.Item>
                       </Link>
-                      <Link to="/order-status">
+                      <Link to="/dashboard?tab=order-status">
                         <Dropdown.Item className="flex gap-3 px-8 py-3">
                           <IoBagAddOutline size={20} className="span mr-4" />
                           <span className="span text-md">My Orders</span>

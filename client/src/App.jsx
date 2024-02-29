@@ -10,6 +10,7 @@ import PublicRoute from "./components/PublicRoute";
 import PageController from "./pages/seller/PageController";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
+import OrderDetail from "./components/OrderDetail";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/order/:orderId" element={<OrderDetail />} />
         </Route>
         <Route path="/sellercenter" element={<PageController />} />
         <Route path="/products/:productSlug" element={<Product />} />
