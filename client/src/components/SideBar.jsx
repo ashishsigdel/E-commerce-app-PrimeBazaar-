@@ -9,6 +9,7 @@ import {
   HiReceiptRefund,
   HiReceiptTax,
   HiRefresh,
+  HiShieldExclamation,
   HiShoppingBag,
   HiShoppingCart,
   HiStar,
@@ -93,6 +94,15 @@ export default function SideBar() {
                   active={tab === "purchases"}
                 >
                   My Purchases
+                </Sidebar.Item>
+              </Link>
+              <Link to={"?tab=canceled"}>
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiShieldExclamation}
+                  active={tab === "canceled"}
+                >
+                  My Cancel
                 </Sidebar.Item>
               </Link>
               <Sidebar.Item href="#" className="my-3" icon={HiStar}>

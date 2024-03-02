@@ -5,6 +5,7 @@ import DashProfile from "../components/DashProfile";
 import Wishlist from "../components/Wishlist";
 import OrderList from "../components/OrderList";
 import MyPurchases from "../components/MyPurchases";
+import MyCancel from "../components/MyCancel";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -25,6 +26,7 @@ export default function Dashboard() {
       {tab === "wishlists" && <Wishlist />}
       {tab === "order-status" && <OrderList />}
       {tab === "purchases" && <MyPurchases />}
+      {tab === "canceled" && <MyCancel />}
     </div>
   );
 }

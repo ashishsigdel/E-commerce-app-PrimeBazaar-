@@ -24,21 +24,12 @@ export default function UploadImage() {
   const [formData, setFormData] = useState({
     imageUrls: [],
   });
-  console.log(formData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [id, setId] = useState("");
-  console.log(id);
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const idFromUrl = urlParams.get("id");
-    if (idFromUrl) {
-      setId(idFromUrl);
-    }
-  }, [location.search]);
 
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -103,7 +94,7 @@ export default function UploadImage() {
     try {
       if (formData.imageUrls.length < 1)
         return setError("You must upload at least one image");
-      const res = await fetch(`/api/product/upload/${id}`, {
+      const res = await fetch(`/api/product/upload/${currentProduct._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,11 +104,12 @@ export default function UploadImage() {
         }),
       });
       const data = await res.json();
-      if (data.success === false) {
+      if (res.ok) {
+        dispatch(uploadImageSuccess());
+        navigate("/sellercenter?tab=dashboard&page=products&role=seller");
+      } else {
         dispatch(uploadImageFailure(data.message));
       }
-      dispatch(uploadImageSuccess());
-      navigate(`/sellercenter?tab=dashboard&page=my-products&role=seller`);
     } catch (error) {
       dispatch(uploadImageFailure(error.message));
     }
@@ -190,7 +182,7 @@ export default function UploadImage() {
         <div className="flex flex-col gap-2 mx-auto">
           {error && <p className="text-red-700 text-sm">{error}</p>}
           <button
-            disabled={loading || uploading}
+            disabled={loading || uploading || formData.imageUrls.length === 0}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
             {loading ? "Uploading..." : "Upload Photos"}

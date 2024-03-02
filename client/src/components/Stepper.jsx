@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
-import ProductCard from "./ProductCard";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Stepper({ order }) {
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const steps = ["Processing", "Dispatched", "Delivered"];
+  const [error, setError] = useState(undefined);
   const initialStep =
     order.orderStatus === "Processing"
       ? 2
@@ -15,9 +17,31 @@ export default function Stepper({ order }) {
       ? 4
       : 1;
   const isComplete = order.orderStatus === "Delivered" ? true : false;
+  const isCanceled = order.orderStatus === "Cancelled" ? true : false;
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [complete, setComplete] = useState(isComplete);
-  console.log(currentStep, complete);
+
+  const handleCancel = async () => {
+    try {
+      const res = await fetch(`/api/user/order/cancel-order/${order._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "Cancelled",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        navigate("/dashboard?tab=canceled");
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   return (
     <>
@@ -57,7 +81,8 @@ export default function Stepper({ order }) {
         </div>
         <div className="flex flex-col justify-end mx-5">
           <button
-            disabled={isComplete || currentStep === 3}
+            onClick={handleCancel}
+            disabled={isComplete || isCanceled || currentStep === 3}
             className={`button ${
               isComplete || currentStep === 3 ? "disabled:bg-gray-500" : ""
             }`}
@@ -66,9 +91,12 @@ export default function Stepper({ order }) {
               ? "Delivered!"
               : currentStep === 3
               ? "Unable to cancel"
+              : isCanceled
+              ? "Cancelled"
               : "Cancel"}
           </button>
         </div>
+        {error && <p className="text-red-500 text-xs">{error}</p>}
       </div>
       <div className="flex w-full sm:flex-row flex-col border shadow-lg my-2 py-5 gap-3">
         <div className="flex-1 w-full items-center px-5 border-r">

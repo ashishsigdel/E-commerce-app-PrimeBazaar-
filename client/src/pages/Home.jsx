@@ -1,36 +1,149 @@
-// FaceComponent.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import ProductCardSmall from "../components/ProductCardSmall";
+import { Link } from "react-router-dom";
+import { Banner, Carousel } from "flowbite-react";
 
 export default function Home() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [products, setProducts] = useState();
+  const [productsTrend, setProductsTrend] = useState();
+  const [productsRecent, setProductsRecent] = useState();
+  console.log(productsTrend);
+  const BannerImage = [
+    "https://icms-image.slatic.net/images/ims-web/45ab55b4-4e47-4c61-8107-96d5b2e5d8f6.jpg_1200x1200.jpg",
+    "https://icms-image.slatic.net/images/ims-web/ba960ea0-649c-4ad3-9a15-68ff406b248b.jpg",
+    "https://icms-image.slatic.net/images/ims-web/d07e1cb5-5a83-4012-83f9-dacc88a1d4d1.jpg",
+    "https://icms-image.slatic.net/images/ims-web/a67609fd-34d9-41fe-9919-758e8ccce73d.png",
+  ];
 
-  const moveFace = (event) => {
-    const x = event.clientX / (window.innerWidth / 110);
-    const y = event.clientY / 7;
-    setPosition({ x, y });
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/product/get?page=1&limit=9&sort=-sold`);
+        const data = await res.json();
+        if (res.ok) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error.message);
+      }
+    };
+
+    fetchProduct();
+  }, []);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `/api/product/get?page=1&limit=10&sort=-totalrating`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setProductsTrend(data);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error.message);
+      }
+    };
+
+    fetchProduct();
+  }, []);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `/api/product/get?page=1&limit=10&sort=-createdAt`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setProductsRecent(data);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error.message);
+      }
+    };
+
+    fetchProduct();
+  }, []);
 
   return (
-    <div
-      className="flex justify-center items-center h-screen bg-gray-300"
-      onMouseMove={moveFace}
-    >
-      <div
-        className="face w-80 max-w-458 aspect-w-1 aspect-h-1 bg-yellow-300 rounded-full flex flex-col justify-around items-center outline-13 border-13 border-solid border-orange-300 shadow-md absolute"
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-        }}
-      >
-        <div className="eyes w-80 h-70 flex justify-between items-center">
-          <div className="leftEye w-45 aspect-w-1 aspect-h-1 rounded-full bg-white overflow-hidden shadow-md flex justify-start items-start">
-            <div className="leftPupil w-58 h-50 rounded-full bg-black"></div>
-          </div>
-          <div className="rightEye w-45 aspect-w-1 aspect-h-1 rounded-full bg-white overflow-hidden shadow-md flex justify-start items-start">
-            <div className="rightPupil w-58 h-50 rounded-full bg-black"></div>
+    <div className="max-w-6xl w-full flex flex-col mx-auto my-5 p-2">
+      <div className="h-56 sm:h-96 xl:h-96 2xl:h-96">
+        <Carousel>
+          {BannerImage.map((images) => (
+            <img
+              className="flex h-full items-center justify-center"
+              src={images}
+              alt=""
+            />
+          ))}
+        </Carousel>
+      </div>
+
+      {products && products.length > 0 && (
+        <div div className="my-5">
+          {" "}
+          <h1 className="text-2xl px-2 my-2 text-gray-600">Just For You</h1>
+          <div className="w-full grid justify-center align-items-center ">
+            <div className="flex align-items-center  overflow-y-auto">
+              <div className="card flex-0 mx-2 flex gap-2 ">
+                {products.map((product) => (
+                  <Link
+                    className="hover:shadow-md bg-white rounded-md"
+                    to={`/products/${product.slug}`}
+                    key={product._id}
+                  >
+                    <ProductCardSmall product={product} />
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mouth w-130 h-38 rounded-full bg-gradient-to-br from-yellow-700 to-yellow-300 mb-88 border-2 border-solid border-yellow-400"></div>
-      </div>
+      )}
+
+      {productsTrend && productsTrend.length > 0 && (
+        <div div className="my-5">
+          {" "}
+          <h1 className="text-2xl px-2 my-2 text-gray-600">Best Rating</h1>
+          <div className="w-full grid justify-center align-items-center ">
+            <div className="flex align-items-center  overflow-y-auto">
+              <div className="card flex-0 mx-2 flex gap-2 ">
+                {productsTrend.map((product) => (
+                  <Link
+                    className="hover:shadow-md bg-white rounded-md"
+                    to={`/products/${product.slug}`}
+                    key={product._id}
+                  >
+                    <ProductCardSmall product={product} />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {productsRecent && productsRecent.length > 0 && (
+        <div div className="my-5">
+          {" "}
+          <h1 className="text-2xl px-2 my-2 text-gray-600">Recent Products</h1>
+          <div className="w-full grid justify-center align-items-center ">
+            <div className="flex align-items-center  overflow-y-auto">
+              <div className="card flex-0 mx-2 flex gap-2 ">
+                {productsRecent.map((product) => (
+                  <Link
+                    className="hover:shadow-md bg-white rounded-md"
+                    to={`/products/${product.slug}`}
+                    key={product._id}
+                  >
+                    <ProductCardSmall product={product} />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

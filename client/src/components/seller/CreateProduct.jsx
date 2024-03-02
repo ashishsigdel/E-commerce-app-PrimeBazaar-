@@ -9,16 +9,17 @@ import {
   createProductFailure,
 } from "../../redux/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
+import UploadImage from "./UploadImage";
 
 export default function CreateProduct() {
   const [formData, setFormData] = useState({});
+  const [nextStep, setNextStep] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  const { currentProduct } = useSelector((state) => state.product);
-  console.log(formData);
 
   const handleSubmit = async (e) => {
+    setNextStep(false);
     e.preventDefault();
     dispatch(createProductStart());
     try {
@@ -33,17 +34,16 @@ export default function CreateProduct() {
         }),
       });
       const data = await res.json();
-      console.log(data);
       if (res.ok) {
         dispatch(createProductSuccess(data));
-        navigate(
-          `/sellercenter?tab=dashboard&page=create-product-images&id=${currentProduct._id}&role=seller`
-        );
+        setNextStep(true);
       } else {
         dispatch(createProductFailure(data.message));
+        setNextStep(false);
       }
     } catch (error) {
       dispatch(createProductFailure(error.message));
+      setNextStep(false);
     }
   };
   return (
@@ -161,11 +161,12 @@ export default function CreateProduct() {
           <button className="button" type="reset">
             Cancel
           </button>
-          <button type="submit" className="button">
-            Publish
+          <button disabled={nextStep} type="submit" className="button">
+            {nextStep ? "Upload images below" : "Publish"}
           </button>
         </div>
       </form>
+      {nextStep && <UploadImage />}
     </div>
   );
 }

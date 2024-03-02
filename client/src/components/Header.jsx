@@ -77,7 +77,7 @@ export default function Header() {
             </div>
 
             <div className="flex gap-5 items-center justify-between">
-              <div>
+              <Link to={"/"}>
                 <img
                   src="https://i.postimg.cc/3N7SXc2s/logo-no-background.png"
                   alt="PrimeBazaar"
@@ -88,15 +88,8 @@ export default function Header() {
                   alt="PB"
                   className="p-1 w-10 md:hidden inline"
                 />
-              </div>
-              {/* <div className="hidden sm:inline">
-                <Dropdown label="Categories" inline>
-                  <Dropdown.Item>Dashboard</Dropdown.Item>
-                  <Dropdown.Item>Settings</Dropdown.Item>
-                  <Dropdown.Item>Earnings</Dropdown.Item>
-                  <Dropdown.Item>Sign out</Dropdown.Item>
-                </Dropdown>
-              </div> */}
+              </Link>
+
               <form>
                 <input
                   type="text"

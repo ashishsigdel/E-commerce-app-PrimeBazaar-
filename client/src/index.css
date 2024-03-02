@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +6,7 @@
 body {
   background-color: rgb(233, 233, 233);
   color: rgb(49, 47, 47);
+  font-family: "Fira Sans Condensed", sans-serif;
 }
 
 .button {
@@ -33,7 +35,7 @@ body {
   background: #17a104;
 }
 .button2:disabled {
-  background: rgb(230, 156, 86);
+  background: #5ce14a;
 }
 
 .span {
@@ -93,4 +95,8 @@ body {
 .complete:not(:first-child):before,
 .active:not(:first-child):before {
   @apply bg-green-600;
+}
+
+.outer::-webkit-scrollbar {
+  display: none;
 }

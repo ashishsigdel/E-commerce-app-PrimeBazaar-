@@ -30,9 +30,10 @@ export default function OrderList() {
       <div className="flex gap-3 flex-wrap w-full m-5 mx-auto">
         {myOrders.map((order) => (
           <div key={order._id}>
-            {order.orderStatus !== "Delivered" && (
-              <ProductCard product={order} />
-            )}
+            {order.orderStatus !== "Delivered" &&
+              order.orderStatus !== "Cancelled" && (
+                <ProductCard product={order} />
+              )}
           </div>
         ))}
       </div>

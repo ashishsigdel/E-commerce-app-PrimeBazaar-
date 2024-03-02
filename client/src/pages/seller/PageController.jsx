@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Auth from "./Auth";
 import ResetPassword from "../ResetPassword";
 import Dashboard from "./Dashboard";
+import Product from "./Product";
 
 export default function PageController() {
   const location = useLocation();
@@ -20,6 +21,7 @@ export default function PageController() {
       {tab === "auth" && <Auth />}
       {tab === "reset-password" && <ResetPassword />}
       {tab === "dashboard" && <Dashboard />}
+      {tab === "products" ** <Product />}
     </div>
   );
 }

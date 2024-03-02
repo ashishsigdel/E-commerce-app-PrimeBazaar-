@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 export default function ProductList() {
   const { currentUser } = useSelector((state) => state.user);
   const [sellerProducts, setSellerProducts] = useState([]);
-  console.log(sellerProducts);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,7 +54,9 @@ export default function ProductList() {
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/products/${product.slug}`}>
+                    <Link
+                      to={`/sellercenter/products/${product.slug}?tab=products&page=products&role=seller`}
+                    >
                       <p className="line-clamp-3 w-36">{product.title}</p>
                     </Link>
                   </Table.Cell>
