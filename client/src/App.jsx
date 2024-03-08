@@ -13,6 +13,7 @@ import ProductSeller from "./pages/seller/Product";
 import Cart from "./pages/Cart";
 import OrderDetail from "./components/OrderDetail";
 import ScrollToTop from "./components/ScrollToTop";
+import Search from "./pages/Search";
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
         </Route>
         <Route path="/sellercenter" element={<PageController />} />
         <Route path="/products/:productSlug" element={<Product />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </BrowserRouter>
   );

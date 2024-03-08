@@ -4,8 +4,8 @@ import SideBar from "../../components/SideBar";
 import DashProfile from "../../components/DashProfile";
 import Header from "./Header";
 import CreateProduct from "../../components/seller/CreateProduct";
-import UploadImage from "../../components/seller/UploadImage";
 import ProductList from "../../components/seller/ProductList";
+import AddProperties from "../../components/seller/AddProperties";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -29,8 +29,8 @@ export default function Dashboard() {
         </div>
         {page === "profile" && <DashProfile />}
         {page === "create-product" && <CreateProduct />}
-        {page === "create-product-images" && <UploadImage />}
         {page === "products" && <ProductList />}
+        {page === "addProperties" && <AddProperties />}
       </div>
     </>
   );

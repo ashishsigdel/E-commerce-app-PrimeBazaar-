@@ -27,6 +27,7 @@ export default function Product() {
   const [product, setProduct] = useState({
     images: [],
     ratings: [],
+    totalrating: 0,
   });
   const [role, setRole] = useState("");
   const [productCount, setProductCount] = useState(1);

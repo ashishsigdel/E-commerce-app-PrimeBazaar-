@@ -25,6 +25,36 @@ export default function ProductList() {
       fetchPosts();
     }
   }, [currentUser._id]);
+
+  const haneleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/product/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        const fetchPosts = async () => {
+          try {
+            const res = await fetch(
+              `/api/product/getproduct?userRef=${currentUser._id}`
+            );
+            const data = await res.json();
+            if (res.ok) {
+              setSellerProducts(data.products);
+            }
+          } catch (error) {
+            console.log(error.message);
+          }
+        };
+        if (currentUser.role === "admin") {
+          fetchPosts();
+        }
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div>
       {currentUser.role === "admin" && sellerProducts.length > 0 ? (
@@ -73,12 +103,12 @@ export default function ProductList() {
                     <p>{product.quantity}</p>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link
-                      to="#"
-                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                    <div
+                      onClick={() => haneleDelete(product._id)}
+                      className="font-medium text-red-600 hover:underline cursor-pointer"
                     >
-                      Edit
-                    </Link>
+                      Delete
+                    </div>
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>

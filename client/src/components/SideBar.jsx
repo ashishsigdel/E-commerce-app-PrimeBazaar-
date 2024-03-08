@@ -2,6 +2,7 @@ import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import {
   HiChat,
+  HiFolderAdd,
   HiHeart,
   HiOutlineBackspace,
   HiOutlineBriefcase,
@@ -171,6 +172,19 @@ export default function SideBar() {
                   active={page === "create-product"}
                 >
                   Add Products
+                </Sidebar.Item>
+              </Link>
+              <Link
+                to={
+                  "/sellercenter?tab=dashboard&page=addProperties&role=seller"
+                }
+              >
+                <Sidebar.Item
+                  className="my-3"
+                  icon={HiFolderAdd}
+                  active={page === "addProperties"}
+                >
+                  Add Proporties
                 </Sidebar.Item>
               </Link>
               <Sidebar.Item href="#" className="my-3" icon={HiRefresh}>

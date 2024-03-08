@@ -2,7 +2,7 @@ import { Select, TextInput } from "flowbite-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createProductStart,
   createProductSuccess,
@@ -12,11 +12,70 @@ import { useDispatch, useSelector } from "react-redux";
 import UploadImage from "./UploadImage";
 
 export default function CreateProduct() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    category: "uncategorized",
+    brand: "No Brand",
+    color: "unselected",
+  });
+  console.log(formData);
   const [nextStep, setNextStep] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const [colors, setColors] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [catagorys, setCategorys] = useState([]);
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      try {
+        const res = await fetch("/api/color/all-color");
+        const data = await res.json();
+        if (res.ok) {
+          setColors(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    if (currentUser.role === "admin") {
+      fetchColor();
+    }
+  }, [currentUser._id]);
+
+  useEffect(() => {
+    const fetchBrand = async () => {
+      try {
+        const res = await fetch("/api/brand/all-brand");
+        const data = await res.json();
+        if (res.ok) {
+          setBrands(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    if (currentUser.role === "admin") {
+      fetchBrand();
+    }
+  }, [currentUser._id]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await fetch("/api/pcategory/all-category");
+        const data = await res.json();
+        if (res.ok) {
+          setCategorys(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    if (currentUser.role === "admin") {
+      fetchCategory();
+    }
+  }, [currentUser._id]);
 
   const handleSubmit = async (e) => {
     setNextStep(false);
@@ -115,9 +174,12 @@ export default function CreateProduct() {
                 }
               >
                 <option value="uncategorized">Select a category</option>
-                <option value="mobile">Mobile</option>
-                <option value="laptop">Laptop</option>
-                <option value="tv">TV</option>
+                {catagorys &&
+                  catagorys.map((catagory) => (
+                    <option key={catagory._id} value={`${catagory.title}`}>
+                      {catagory.title}
+                    </option>
+                  ))}
               </Select>
             </div>
           </div>
@@ -130,9 +192,12 @@ export default function CreateProduct() {
                 }
               >
                 <option value="No Brand">No Brand</option>
-                <option value="apple">Apple</option>
-                <option value="lenovo">Lenovo</option>
-                <option value="acer">Acer</option>
+                {brands &&
+                  brands.map((brand) => (
+                    <option key={brand._id} value={`${brand.title}`}>
+                      {brand.title}
+                    </option>
+                  ))}
               </Select>
             </div>
           </div>
@@ -144,15 +209,13 @@ export default function CreateProduct() {
                   setFormData({ ...formData, color: e.target.value })
                 }
               >
-                <option value="unselected">Select a Colour name</option>
-                <option value="red">Red</option>
-                <option value="yellow">yellow</option>
-                <option value="blue">blue</option>
-                <option value="white">white</option>
-                <option value="black">black</option>
-                <option value="Silver">Silver</option>
-                <option value="Gold">Gold</option>
-                <option value="Pink">Pink</option>
+                <option value="unselected">Not selected</option>
+                {colors &&
+                  colors.map((color) => (
+                    <option key={color._id} value={`${color.title}`}>
+                      {color.title}
+                    </option>
+                  ))}
               </Select>
             </div>
           </div>

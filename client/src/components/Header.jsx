@@ -1,5 +1,5 @@
 import { Dropdown, TextInput } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { BsEmojiSmile } from "react-icons/bs";
 import {
@@ -17,7 +17,17 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const [role, setRole] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -26,6 +36,14 @@ export default function Header() {
       setRole(roleFromUrl);
     }
   }, [location.search]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
 
   const handleLogOut = async () => {
     try {
@@ -90,9 +108,11 @@ export default function Header() {
                 />
               </Link>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 <input
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search Product Here..."
                   className="rounded-lg h-8 md:w-[550px] w-36 active:outline-none border-none text-gray-600"
                 />

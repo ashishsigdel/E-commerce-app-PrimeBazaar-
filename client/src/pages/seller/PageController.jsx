@@ -21,7 +21,7 @@ export default function PageController() {
       {tab === "auth" && <Auth />}
       {tab === "reset-password" && <ResetPassword />}
       {tab === "dashboard" && <Dashboard />}
-      {tab === "products" ** <Product />}
+      {tab === "products" && <Product />}
     </div>
   );
 }
