@@ -8,6 +8,7 @@ export default function Auth() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formReset, setFormReset] = useState("");
+  const [role, setRole] = useState("");
   const handleChange = (e) => {
     setFormData({
       ...formData,

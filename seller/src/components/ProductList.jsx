@@ -84,9 +84,7 @@ export default function ProductList() {
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link
-                      to={`/sellercenter/products/${product.slug}?tab=products&page=products&role=seller`}
-                    >
+                    <Link to={`/products/${product.slug}`}>
                       <p className="line-clamp-3 w-36">{product.title}</p>
                     </Link>
                   </Table.Cell>

@@ -7,7 +7,7 @@ import {
   createProductStart,
   createProductSuccess,
   createProductFailure,
-} from "../../redux/product/productSlice";
+} from "../redux/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import UploadImage from "./UploadImage";
 

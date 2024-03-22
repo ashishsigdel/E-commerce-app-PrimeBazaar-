@@ -5,7 +5,6 @@ import { IoIosStar, IoIosStarOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IoBusOutline,
-  IoHeart,
   IoHeartOutline,
   IoLocation,
   IoServerOutline,
@@ -17,7 +16,7 @@ import {
   HiOutlineExclamationCircle,
 } from "react-icons/hi";
 import Header from "./Header";
-import ReviewRating from "../../components/ReviewRating";
+import ReviewRating from "../components/ReviewRating";
 
 export default function Product() {
   const { currentUser, loading, error } = useSelector((state) => state.user);

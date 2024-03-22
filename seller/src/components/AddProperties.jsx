@@ -82,13 +82,14 @@ export default function AddProperties() {
   };
 
   return (
-    <div className="w-full">
+    <div className="mx-auto">
       <h1 className="text-2xl sm:text-3xl p-5 m-2">Are you a first seller?</h1>
-      <div className="bg-white w-full p-3 sm:p-6 mx-auto flex flex-col sm:flex-row gap-3 items-stretch sm:items-start flex-wrap sm:flex-nowrap rounded-md shadow-lg">
+      <div className="bg-white p-3 sm:p-6 mx-auto flex-col gap-5 items-stretch sm:items-start flex-wrap sm:flex-nowrap rounded-md shadow-lg">
+        {" "}
         <div className="w-full shadow-lg p-3">
           <h1 className="text-2xl">Add brand</h1>
           <form
-            className="flex max-w-md flex-col gap-4"
+            className="flex max-w-md flex-col gap-4 w-96"
             onSubmit={handleSubmitBrand}
           >
             <div>
@@ -106,7 +107,7 @@ export default function AddProperties() {
         <div className="w-full shadow-lg p-3">
           <h1 className="text-2xl">Add color</h1>
           <form
-            className="flex max-w-md flex-col gap-4"
+            className="flex max-w-md flex-col gap-4 w-96"
             onSubmit={handleSubmitColor}
           >
             <div>
@@ -124,7 +125,7 @@ export default function AddProperties() {
         <div className="w-full shadow-lg p-3">
           <h1 className="text-2xl">Add category</h1>
           <form
-            className="flex max-w-md flex-col gap-4"
+            className="flex max-w-md flex-col gap-4 w-96"
             onSubmit={handleSubmitCategory}
           >
             <div>

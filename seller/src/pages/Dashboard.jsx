@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import SideBar from "../../components/SideBar";
-import DashProfile from "../../components/DashProfile";
+import SideBar from "../components/SideBar";
 import Header from "./Header";
-import CreateProduct from "../../components/seller/CreateProduct";
-import ProductList from "../../components/seller/ProductList";
-import AddProperties from "../../components/seller/AddProperties";
+import DashProfile from "../components/DashProfile";
+import CreateProduct from "../components/CreateProduct";
+import ProductList from "../components/ProductList";
+import AddProperties from "../components/AddProperties";
+import CreateCoupon from "../components/CreateCoupon";
 
 export default function Dashboard() {
   const location = useLocation();
-  const [tab, setTab] = useState("");
   const [page, setPage] = useState("");
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
     const pageFromUrl = urlParams.get("page");
-    if (tabFromUrl) {
-      setTab(tabFromUrl);
+    if (pageFromUrl) {
       setPage(pageFromUrl);
     }
   }, [location.search]);
@@ -31,6 +29,7 @@ export default function Dashboard() {
         {page === "create-product" && <CreateProduct />}
         {page === "products" && <ProductList />}
         {page === "addProperties" && <AddProperties />}
+        {page === "create-coupon" && <CreateCoupon />}
       </div>
     </>
   );

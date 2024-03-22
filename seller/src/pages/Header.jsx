@@ -1,21 +1,10 @@
 import { Dropdown, TextInput } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  HiOutlineDocumentAdd,
-  HiOutlineFolderAdd,
-  HiOutlineShoppingCart,
-  HiPlusCircle,
-} from "react-icons/hi";
+import { HiPlusCircle } from "react-icons/hi";
 import { BsEmojiSmile } from "react-icons/bs";
-import {
-  IoBagAddOutline,
-  IoStarOutline,
-  IoLogOutOutline,
-} from "react-icons/io5";
-import { IoIosHeartEmpty } from "react-icons/io";
-import { FaRegUser } from "react-icons/fa";
+import { IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { signoutSuccess } from "../../redux/user/userSlice.js";
+import { signoutSuccess } from "../redux/user/userSlice.js";
 import { useEffect, useState } from "react";
 
 export default function Header() {
@@ -42,7 +31,7 @@ export default function Header() {
 
       if (res.ok) {
         dispatch(signoutSuccess());
-        navigate("/sellercenter?tab=auth&role=seller");
+        navigate("/");
       } else {
         console.log(data.message);
       }
@@ -53,7 +42,7 @@ export default function Header() {
 
   return (
     <>
-      {currentUser.role === "admin" && (
+      {currentUser && (
         <header className="bg-orange-500 text-white shadow-md">
           <div className="flex-col gap-2 sm:mx-auto max-w-6xl pb-3 pt-3 sm:pt-0 mx-2 sm:px-2 items-center">
             <div className="flex gap-5 items-center py-4 justify-evenly">
@@ -85,11 +74,7 @@ export default function Header() {
                     color=""
                     className="py-3"
                   >
-                    <Link
-                      to={
-                        "/sellercenter?tab=dashboard&page=profile&role=seller"
-                      }
-                    >
+                    <Link to={"/dashboard?page=profile"}>
                       <Dropdown.Item className="flex gap-3 px-8 py-3">
                         <BsEmojiSmile size={20} className="span mr-4" />
                         <span className="span text-md">Manage My Account</span>
@@ -106,11 +91,7 @@ export default function Header() {
                   </Dropdown>
                 </div>
               </div>
-              <Link
-                to={
-                  "/sellercenter?tab=dashboard&page=create-product&role=seller"
-                }
-              >
+              <Link to={"/dashboard?page=create-product"}>
                 <div className="flex items-center gap-2">
                   <HiPlusCircle size={20} />
                   <span>Add Product</span>

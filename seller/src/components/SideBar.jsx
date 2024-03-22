@@ -4,7 +4,9 @@ import {
   HiChat,
   HiFolderAdd,
   HiHeart,
+  HiMinusCircle,
   HiOutlineBriefcase,
+  HiPaperClip,
   HiPlusCircle,
   HiRefresh,
   HiShieldExclamation,
@@ -26,15 +28,12 @@ export default function SideBar() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
-  const [tab, setTab] = useState("");
   const [page, setPage] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
     const pageFromUrl = urlParams.get("page");
-    if (tabFromUrl) {
-      setTab(tabFromUrl);
+    if (pageFromUrl) {
       setPage(pageFromUrl);
     }
   }, [location.search]);
@@ -81,64 +80,68 @@ export default function SideBar() {
       >
         <Sidebar.Items>
           <Sidebar.ItemGroup>
-            <span className="text-lg font-semibold ">Manage my Profile</span>
-            <Link to={"?tab=profile"}>
+            <span className="text-lg font-semibold ">Your Account</span>
+            <Link to={"?page=profile"}>
               <Sidebar.Item
                 className="my-3"
                 icon={HiUser}
-                active={tab === "profile"}
+                active={page === "profile"}
               >
                 My Profile
               </Sidebar.Item>
             </Link>
-            <span className="text-lg font-semibold ">My Activities</span>
-
-            <Link to={"?tab=order-status"}>
+            <Link to={"?page=products"}>
               <Sidebar.Item
                 className="my-3"
-                icon={HiShoppingCart}
-                active={tab === "order-status"}
+                icon={HiShoppingBag}
+                active={page === "products"}
               >
-                My Orders
+                My Products
               </Sidebar.Item>
             </Link>
-            <Link to={"?tab=purchases"}>
+            <Link to={"?page=create-product"}>
               <Sidebar.Item
                 className="my-3"
-                icon={HiOutlineBriefcase}
-                active={tab === "purchases"}
+                icon={HiPlusCircle}
+                active={page === "create-product"}
               >
-                My Purchases
+                Add Products
               </Sidebar.Item>
             </Link>
-            <Link to={"?tab=canceled"}>
+            <Link to={"?page=addProperties"}>
               <Sidebar.Item
                 className="my-3"
-                icon={HiShieldExclamation}
-                active={tab === "canceled"}
+                icon={HiFolderAdd}
+                active={page === "addProperties"}
               >
-                My Cancel
+                Add Proporties
               </Sidebar.Item>
             </Link>
-            <Sidebar.Item href="#" className="my-3" icon={HiStar}>
-              My Reviews
+            <Link to={"?page=create-coupon"}>
+              <Sidebar.Item
+                className="my-3"
+                icon={HiMinusCircle}
+                active={page === "create-coupon"}
+              >
+                Create Coupon
+              </Sidebar.Item>
+            </Link>
+            <Sidebar.Item href="#" className="my-3" icon={HiRefresh}>
+              Order Requests
             </Sidebar.Item>
-            <Link to={"?tab=wishlists"}>
-              <Sidebar.Item
-                className="my-3"
-                icon={HiHeart}
-                active={tab === "wishlists"}
-              >
-                My Wishlists
-              </Sidebar.Item>
-            </Link>
+            <Sidebar.Item href="#" className="my-3" icon={HiChat}>
+              Review Comments
+            </Sidebar.Item>
+            <Sidebar.Item href="#" className="my-3" icon={HiOutlineBriefcase}>
+              Delevered Progress
+            </Sidebar.Item>
           </Sidebar.ItemGroup>
 
           <Sidebar.ItemGroup>
             <Sidebar.Item
               className="my-3"
               icon={HiTrash}
-              onClick={handleDeleteUser}
+              onClick={handleDeleteSeller}
             >
               Delete My account
             </Sidebar.Item>

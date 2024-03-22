@@ -4,7 +4,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { app } from "../../firebase.js";
+import { app } from "../firebase.js";
 import { useEffect, useRef, useState } from "react";
 import { MdClose, MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import {
   uploadImageSuccess,
   uploadImageStart,
   uploadImageFailure,
-} from "../../redux/product/productSlice.js";
+} from "../redux/product/productSlice.js";
 
 export default function UploadImage() {
   const location = useLocation();
@@ -106,7 +106,7 @@ export default function UploadImage() {
       const data = await res.json();
       if (res.ok) {
         dispatch(uploadImageSuccess());
-        navigate("/sellercenter?tab=dashboard&page=products&role=seller");
+        navigate("/dashboard?page=products");
       } else {
         dispatch(uploadImageFailure(data.message));
       }

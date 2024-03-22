@@ -6,7 +6,7 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
-} from "../../redux/user/userSlice.js";
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -38,7 +38,7 @@ export default function SignIn() {
       const data = await res.json();
       if (res.ok) {
         dispatch(signInSuccess(data));
-        navigate("/sellercenter?tab=dashboard&role=seller");
+        navigate("/dashboard?page=profile");
       } else {
         dispatch(signInFailure(data.message));
         return;
@@ -93,9 +93,7 @@ export default function SignIn() {
           </form>
           <div className="flex justify-between mt-2 px-3">
             <span className="text-xs underline text-blue-500 ">
-              <Link to={"/sellercenter?tab=reset-password&role=seller"}>
-                Forgot Password ?
-              </Link>
+              <Link to={"/reset-password"}>Forgot Password ?</Link>
             </span>
             {error && <p className="text-xs text-red-500">{error}</p>}
           </div>

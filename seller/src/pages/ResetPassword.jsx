@@ -63,7 +63,7 @@ export default function ResetPassword() {
         console.log(res);
         const data = await res.json();
         if (res.ok) {
-          navigate("/sellercenter?tab=auth&role=seller");
+          navigate("/");
           setSuccess(false);
           setLoading(false);
         } else {
@@ -179,10 +179,7 @@ export default function ResetPassword() {
         <div className="mt-4">
           <p className="text-sm">
             Cancel to reset.{" "}
-            <Link
-              to={"/sellercenter?tab=auth&role=seller"}
-              className="text-blue-400"
-            >
+            <Link to={"/"} className="text-blue-400">
               Go back
             </Link>
           </p>
