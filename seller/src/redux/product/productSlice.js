@@ -36,6 +36,19 @@ export const productSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateOrderStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateOrderSuccess: (state, action) => {
+      state.currentProduct = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateOrderFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -46,6 +59,9 @@ export const {
   uploadImageStart,
   uploadImageSuccess,
   uploadImageFailure,
+  updateOrderStart,
+  updateOrderSuccess,
+  updateOrderFailure,
 } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import { PrivateRouteSeller } from "./components/PrivateRoute";
 import Product from "./pages/Product";
 import PublicRoute from "./components/PublicRoute";
+import Stepper from "./components/Stepper";
+import OrderDetail from "./components/OrderDetail";
 
 export default function App() {
   return (
@@ -19,6 +21,7 @@ export default function App() {
         <Route element={<PrivateRouteSeller />}>
           <Route path="/products/:productSlug" element={<Product />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/orderstatus/:orderId" element={<OrderDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>

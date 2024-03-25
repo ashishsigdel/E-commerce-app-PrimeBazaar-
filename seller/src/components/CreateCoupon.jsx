@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Label,
-  Select,
-  Spinner,
-  TextInput,
-} from "flowbite-react";
+import React, { useEffect, useState } from "react";
+import { Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useSelector } from "react-redux";
 
 export default function CreateCoupon() {
+  const currentUser = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

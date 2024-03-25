@@ -6,7 +6,9 @@ import DashProfile from "../components/DashProfile";
 import CreateProduct from "../components/CreateProduct";
 import ProductList from "../components/ProductList";
 import AddProperties from "../components/AddProperties";
-import CreateCoupon from "../components/CreateCoupon";
+import Coupons from "../components/Coupons";
+import ManageCoupons from "../components/ManageCoupons";
+import OrderRequest from "../components/OrderRequest";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -29,7 +31,9 @@ export default function Dashboard() {
         {page === "create-product" && <CreateProduct />}
         {page === "products" && <ProductList />}
         {page === "addProperties" && <AddProperties />}
-        {page === "create-coupon" && <CreateCoupon />}
+        {page === "coupon" && <Coupons />}
+        {page === "couponmanage" && <ManageCoupons />}
+        {page === "order-request" && <OrderRequest />}
       </div>
     </>
   );

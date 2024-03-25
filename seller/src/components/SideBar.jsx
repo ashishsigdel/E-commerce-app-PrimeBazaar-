@@ -4,7 +4,6 @@ import {
   HiChat,
   HiFolderAdd,
   HiHeart,
-  HiMinusCircle,
   HiOutlineBriefcase,
   HiPaperClip,
   HiPlusCircle,
@@ -16,6 +15,7 @@ import {
   HiTrash,
   HiUser,
 } from "react-icons/hi";
+import { MdOutlineDiscount } from "react-icons/md";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -117,18 +117,25 @@ export default function SideBar() {
                 Add Proporties
               </Sidebar.Item>
             </Link>
-            <Link to={"?page=create-coupon"}>
+            <Link to={"?page=coupon"}>
               <Sidebar.Item
                 className="my-3"
-                icon={HiMinusCircle}
-                active={page === "create-coupon"}
+                icon={MdOutlineDiscount}
+                active={page === "coupon"}
               >
-                Create Coupon
+                Coupon
               </Sidebar.Item>
             </Link>
-            <Sidebar.Item href="#" className="my-3" icon={HiRefresh}>
-              Order Requests
-            </Sidebar.Item>
+            <Link to={"?page=order-request"}>
+              <Sidebar.Item
+                className="my-3"
+                icon={HiRefresh}
+                active={page === "order-request"}
+              >
+                Order Requests
+              </Sidebar.Item>
+            </Link>
+
             <Sidebar.Item href="#" className="my-3" icon={HiChat}>
               Review Comments
             </Sidebar.Item>

@@ -17,7 +17,6 @@ export default function CreateProduct() {
     brand: "No Brand",
     color: "unselected",
   });
-  console.log(formData);
   const [nextStep, setNextStep] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();

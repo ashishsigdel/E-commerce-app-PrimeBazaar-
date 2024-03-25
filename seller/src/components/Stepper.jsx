@@ -1,13 +1,20 @@
+import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { TiTick } from "react-icons/ti";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  updateOrderStart,
+  updateOrderSuccess,
+  updateOrderFailure,
+} from "../redux/product/productSlice";
 
 export default function Stepper({ order }) {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const steps = ["Processing", "Dispatched", "Delivered"];
-  const [error, setError] = useState(undefined);
+  const [updateOrderValue, setupdateOrderValue] = useState(null);
   const initialStep =
     order.orderStatus === "Processing"
       ? 2
@@ -17,29 +24,40 @@ export default function Stepper({ order }) {
       ? 4
       : 1;
   const isComplete = order.orderStatus === "Delivered" ? true : false;
-  const isCanceled = order.orderStatus === "Cancelled" ? true : false;
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [complete, setComplete] = useState(isComplete);
+  const [openModal, setOpenModal] = useState(false);
+  console.log(order);
 
-  const handleCancel = async () => {
+  const handleChange = (step) => {
+    setupdateOrderValue(step);
+    setOpenModal(true);
+  };
+
+  const handleUpdate = async (updateOrderValue) => {
+    updateOrderStart();
     try {
-      const res = await fetch(`/api/user/order/cancel-order/${order._id}`, {
+      const res = await fetch(`/api/user/order/update-order/${order._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          status: "Cancelled",
+          status: updateOrderValue,
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        navigate("/dashboard?tab=canceled");
+        updateOrderSuccess(data.message);
+        setOpenModal(false);
+        window.location.reload();
       } else {
-        setError(data.message);
+        setOpenModal(false);
+        setMessage("An error occured!");
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      console.error(err);
+      setOpenModal(false);
     }
   };
 
@@ -49,9 +67,10 @@ export default function Stepper({ order }) {
         {steps?.map((step, i) => (
           <div
             key={i}
-            className={`relative flex flex-col justify-center items-center w-36 step-item ${
+            className={`relative flex flex-col justify-center items-center w-36 step-item cursor-pointer ${
               currentStep === i + 1 && "active"
             } ${(i + 1 < currentStep || complete) && "complete"} `}
+            onClick={() => handleChange(step)}
           >
             <div className="w-10 h-10 flex items-center justify-center z-10 relative bg-slate-700 rounded-full font-semibold text-white step">
               {i + 1 < currentStep || complete ? <TiTick size={24} /> : i + 1}
@@ -60,7 +79,6 @@ export default function Stepper({ order }) {
           </div>
         ))}
       </div>
-
       <div className="w-full sm:flex-row flex-col border shadow-lg mt-10 py-5 gap-3">
         {order.products.map((products) => (
           <div className="flex w-full items-center px-5 border-b py-4">
@@ -81,24 +99,6 @@ export default function Stepper({ order }) {
             </div>
           </div>
         ))}
-        <div className="w-32 mx-auto my-5 flex flex-col justify-end ">
-          <button
-            onClick={handleCancel}
-            disabled={isComplete || isCanceled || currentStep === 3}
-            className={`button ${
-              isComplete || currentStep === 3 ? "disabled:bg-gray-500" : ""
-            }`}
-          >
-            {isComplete
-              ? "Delivered!"
-              : currentStep === 3
-              ? "Unable to cancel"
-              : isCanceled
-              ? "Cancelled"
-              : "Cancel"}
-          </button>
-        </div>
-        {error && <p className="text-red-500 text-xs">{error}</p>}
       </div>
       <div className="flex w-full sm:flex-row flex-col border shadow-lg my-2 py-5 gap-3">
         <div className="flex-1 w-full items-center px-5 border-r">
@@ -124,6 +124,37 @@ export default function Stepper({ order }) {
           </div>
         </div>
       </div>
+      {updateOrderValue && (
+        <>
+          <Modal
+            show={openModal}
+            size="md"
+            onClose={() => setOpenModal(false)}
+            popup
+          >
+            <Modal.Header />
+            <Modal.Body>
+              <div className="text-center">
+                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  {`Is this product ${updateOrderValue}?`}
+                </h3>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    color="failure"
+                    onClick={() => handleUpdate(updateOrderValue)}
+                  >
+                    {"Yes"}
+                  </Button>
+                  <Button color="gray" onClick={() => setOpenModal(false)}>
+                    No
+                  </Button>
+                </div>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </>
+      )}
     </>
   );
 }

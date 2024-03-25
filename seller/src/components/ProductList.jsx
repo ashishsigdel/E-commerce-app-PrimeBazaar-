@@ -118,7 +118,7 @@ export default function ProductList() {
           <p className="text-red-500 text-xl">
             You have no listed product yet.
           </p>
-          <Link to="/sellercenter?tab=dashboard&page=create-product&role=seller">
+          <Link to="/dashboard?page=create-product">
             <button type="button" className="button">
               Click Here to Add Product
             </button>
