@@ -157,7 +157,7 @@ export default function Cart() {
   return (
     <>
       {cartProduct !== null && cartProduct.products.length > 0 ? (
-        <div className="max-w-6xl bg-white w-full flex flex-col mx-auto my-5 p-2">
+        <div className="max-w-6xl min-h-screen bg-white w-full flex flex-col mx-auto my-5 p-2">
           <div className="flex sm:flex-row flex-col sm:gap-10 mx-2">
             <div className="sm:w-2/3 w-full flex items-center justify-center">
               <div className="w-full h-full">
@@ -254,7 +254,7 @@ export default function Cart() {
           </div>
         </div>
       ) : (
-        <div className="m-5 p-3">
+        <div className="m-5 p-3 min-h-screen">
           <p className="text-2xl text-red-500">You have no product in cart.</p>
         </div>
       )}

@@ -1,17 +1,10 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import {
-  HiChat,
   HiFolderAdd,
-  HiHeart,
   HiOutlineBriefcase,
-  HiPaperClip,
   HiPlusCircle,
-  HiRefresh,
-  HiShieldExclamation,
   HiShoppingBag,
-  HiShoppingCart,
-  HiStar,
   HiTrash,
   HiUser,
 } from "react-icons/hi";
@@ -30,6 +23,38 @@ export default function SideBar() {
   const location = useLocation();
   const [page, setPage] = useState("");
   const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
+  console.log(orders);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("/api/user/order/get-orders");
+        const data = await res.json();
+        if (res.ok) {
+          setOrders(data);
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    if (currentUser.role === "admin") {
+      fetchOrders();
+    }
+  }, [currentUser._id]);
+
+  let count = 0;
+  for (let i = 0; i < orders.length; i++) {
+    if (
+      orders[i].orderStatus !== "Delivered" &&
+      orders[i].orderStatus !== "Cancelled"
+    ) {
+      count++;
+    }
+  }
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const pageFromUrl = urlParams.get("page");
@@ -90,6 +115,16 @@ export default function SideBar() {
                 My Profile
               </Sidebar.Item>
             </Link>
+            <Link to={"?page=order-request"}>
+              <Sidebar.Item
+                className="my-3"
+                icon={HiOutlineBriefcase}
+                active={page === "order-request"}
+                label={`${count}`}
+              >
+                Order Requests
+              </Sidebar.Item>
+            </Link>
             <Link to={"?page=products"}>
               <Sidebar.Item
                 className="my-3"
@@ -126,22 +161,6 @@ export default function SideBar() {
                 Coupon
               </Sidebar.Item>
             </Link>
-            <Link to={"?page=order-request"}>
-              <Sidebar.Item
-                className="my-3"
-                icon={HiRefresh}
-                active={page === "order-request"}
-              >
-                Order Requests
-              </Sidebar.Item>
-            </Link>
-
-            <Sidebar.Item href="#" className="my-3" icon={HiChat}>
-              Review Comments
-            </Sidebar.Item>
-            <Sidebar.Item href="#" className="my-3" icon={HiOutlineBriefcase}>
-              Delevered Progress
-            </Sidebar.Item>
           </Sidebar.ItemGroup>
 
           <Sidebar.ItemGroup>

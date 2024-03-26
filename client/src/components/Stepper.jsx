@@ -63,7 +63,7 @@ export default function Stepper({ order }) {
 
       <div className="w-full sm:flex-row flex-col border shadow-lg mt-10 py-5 gap-3">
         {order.products.map((products) => (
-          <div className="flex w-full items-center px-5 border-b py-4">
+          <div className="flex flex-col sm:flex-row w-full items-center px-5 border-b py-4">
             <img
               src={products.product.images[0]}
               alt={order.products[0].product.images[0]}

@@ -12,6 +12,8 @@ import Cart from "./pages/Cart";
 import OrderDetail from "./components/OrderDetail";
 import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
+import FooterSection from "./components/FooterSection";
+import FAQHelp from "./pages/FAQHelp";
 
 export default function App() {
   return (
@@ -33,7 +35,9 @@ export default function App() {
 
         <Route path="/products/:productSlug" element={<Product />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/help-center" element={<FAQHelp />} />
       </Routes>
+      <FooterSection />
     </BrowserRouter>
   );
 }

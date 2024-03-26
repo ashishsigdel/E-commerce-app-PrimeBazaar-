@@ -120,9 +120,6 @@ export default function SideBar() {
                 My Cancel
               </Sidebar.Item>
             </Link>
-            <Sidebar.Item href="#" className="my-3" icon={HiStar}>
-              My Reviews
-            </Sidebar.Item>
             <Link to={"?tab=wishlists"}>
               <Sidebar.Item
                 className="my-3"
